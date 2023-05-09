@@ -11,6 +11,7 @@
         <v-f-toolbar :data="fetchData" />
         <v-f-breadcrumb :data="fetchData" />
         <v-f-explorer :view="view" :data="fetchData" />
+        <v-f-statusbar :data="fetchData" />
       </div>
 
       <component v-if="modal.active" :is="'v-f-modal-' + modal.type" :selection="modal.data" :current="fetchData" />
@@ -33,6 +34,7 @@ import VFBreadcrumb from '../components/Breadcrumb.vue';
 import VFContextMenu from '../components/ContextMenu.vue';
 import VFExplorer from '../components/Explorer.vue';
 import VFToolbar from '../components/Toolbar.vue';
+import VFStatusbar from '../components/Statusbar.vue';
 import { useApiUrl } from '../composables/useApiUrl.js';
 import { useI18n } from '../composables/useI18n.js';
 import { useStorage } from '../composables/useStorage.js';

@@ -54,6 +54,18 @@ emitter.on('vf-context-selected', (items) => {
 const { t } = inject('i18n');
 
 const menuItems = {
+  newfolder: {
+    title: () => t('New Folder'),
+    action: () => {
+      emitter.emit('vf-modal-show', { type: 'new-folder' });
+    },
+  },
+  delete: {
+    title: () => t('Delete'),
+    action: () => {
+      emitter.emit('vf-modal-show', { type: 'delete', items: selectedItems });
+    },
+  },
   refresh: {
     title: () => t('Refresh'),
     action: () => {
@@ -94,6 +106,24 @@ const menuItems = {
       emitter.emit('vf-download', url);
     },
   },
+  archive: {
+    title: () => t('Archive'),
+    action: () => {
+      emitter.emit('vf-modal-show', { type: 'archive', items: selectedItems });
+    },
+  },
+  unarchive: {
+    title: () => t('Unarchive'),
+    action: () => {
+      emitter.emit('vf-modal-show', { type: 'unarchive', items: selectedItems });
+    },
+  },
+  rename: {
+    title: () => t('Rename'),
+    action: () => {
+      emitter.emit('vf-modal-show', { type: 'rename', items: selectedItems });
+    },
+  },
 };
 
 const run = (item) => {
@@ -120,13 +150,13 @@ emitter.on('vf-contextmenu-show', ({ event, area, items, target = null }) => {
     }
   } else if (!target && !searchQuery.value) {
     context.items.push(menuItems.refresh);
-    context.items.push(menuItems.newfolder);
+    // context.items.push(menuItems.newfolder);
     emitter.emit('vf-context-selected', []);
     // console.log('no files selected');
   } else if (items.length > 1 && items.some((el) => el.path === target.path)) {
     context.items.push(menuItems.refresh);
-    context.items.push(menuItems.archive);
-    context.items.push(menuItems.delete);
+    // context.items.push(menuItems.archive);
+    // context.items.push(menuItems.delete);
     emitter.emit('vf-context-selected', items);
     // console.log(items.length + ' selected (more than 1 item.)');
   } else {
@@ -136,14 +166,14 @@ emitter.on('vf-contextmenu-show', ({ event, area, items, target = null }) => {
       context.items.push(menuItems.preview);
       context.items.push(menuItems.download);
     }
-    context.items.push(menuItems.rename);
+    // context.items.push(menuItems.rename);
 
     if (target.mime_type == 'application/zip') {
-      context.items.push(menuItems.unarchive);
+      // context.items.push(menuItems.unarchive);
     } else {
-      context.items.push(menuItems.archive);
+      // context.items.push(menuItems.archive);
     }
-    context.items.push(menuItems.delete);
+    // context.items.push(menuItems.delete);
     emitter.emit('vf-context-selected', [target]);
     // console.log(target.type + ' is selected');
   }
