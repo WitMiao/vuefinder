@@ -286,14 +286,14 @@ export default {
 </script>
 
 <script setup>
-import { inject, nextTick, onMounted, onUpdated, reactive, ref, watch } from 'vue';
 import DragSelect from 'dragselect';
-import filesize from './../utils/filesize.js';
+import LazyLoad from 'vanilla-lazyload';
+import { inject, nextTick, onMounted, onUpdated, reactive, ref, watch } from 'vue';
 import datetimestring from '../utils/datetimestring.js';
+import { getImageUrl } from '../utils/getImageUrl.js';
+import filesize from './../utils/filesize.js';
 import VFSortIcon from './SortIcon.vue';
 import VFToast from './Toast.vue';
-import { getImageUrl } from '../utils/getImageUrl.js';
-import LazyLoad from 'vanilla-lazyload';
 
 const props = defineProps({
   view: String,
@@ -482,7 +482,7 @@ const setDragSelect = () => {
   emitter.on('vf-explorer-update', () =>
     nextTick(() => {
       ds.value.clearSelection();
-      ds.value.setSelectables(document.getElementsByClassName('vf-item-' + randId));
+      ds.value.setSettings({ selectables: document.getElementsByClassName('vf-item-' + randId) });
     })
   );
 
