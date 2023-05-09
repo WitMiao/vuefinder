@@ -11,7 +11,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "publish": "npm run build && npm publish"
   },
   "homepage": "https://github.com/WitMiao/vuefinder#readme",
   "keywords": [
