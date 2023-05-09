@@ -2,8 +2,8 @@
   <div class="vuefinder">
     <div :class="darkMode ? 'dark' : ''">
       <div
-        :class="fullScreen ? 'fixed w-screen inset-0 z-20' : 'relative rounded-md'"
-        :style="!fullScreen ? 'max-height: ' + maxHeight : ''"
+        :class="fullScreenMode ? 'fixed w-screen inset-0 z-20' : 'relative rounded-md'"
+        :style="!fullScreenMode ? 'max-height: ' + maxHeight : ''"
         class="border flex flex-col bg-white dark:bg-gray-800 text-gray-700 dark:text-neutral-400 border-neutral-300 dark:border-gray-900 min-w-min select-none"
         @mousedown="emitter.emit('vf-contextmenu-hide')"
         @touchstart="emitter.emit('vf-contextmenu-hide')"
@@ -106,11 +106,11 @@ const loadingState = ref(false);
 
 provide('loadingState', loadingState);
 
-const fullScreen = ref(getStore('full-screen', props.fullScreen));
+const fullScreenMode = ref(getStore('full-screen', props.fullScreen));
 
 emitter.on('vf-fullscreen-toggle', () => {
-  fullScreen.value = !fullScreen.value;
-  setStore('full-screen', fullScreen.value);
+  fullScreenMode.value = !fullScreenMode.value;
+  setStore('full-screen', fullScreenMode.value);
 });
 
 emitter.on('vf-view-toggle', (newView) => {
