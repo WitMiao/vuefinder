@@ -12,7 +12,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "publish": "npm publish"
+    "publish": "npm publish",
+    "postversion": "npm version patch -m \"版本更新至%s\""
   },
   "homepage": "https://github.com/WitMiao/vuefinder#readme",
   "keywords": [
