@@ -3,7 +3,7 @@
     <div :class="darkMode ? 'dark' : ''">
       <div
         :class="fullScreenMode ? 'fixed w-screen inset-0 z-20' : 'relative rounded-md'"
-        :style="!fullScreenMode ? 'max-height: ' + maxHeight : ''"
+        :style="!fullScreenMode ? `max-height: ${maxHeight};min-height: ${minHeight}` : ''"
         class="border flex flex-col bg-white dark:bg-gray-800 text-gray-700 dark:text-neutral-400 border-neutral-300 dark:border-gray-900 min-w-min select-none"
         @mousedown="emitter.emit('vf-contextmenu-hide')"
         @touchstart="emitter.emit('vf-contextmenu-hide')"
@@ -11,7 +11,6 @@
         <v-f-toolbar :data="fetchData" />
         <v-f-breadcrumb :data="fetchData" />
         <v-f-explorer :view="view" :data="fetchData" />
-        <v-f-statusbar :data="fetchData" />
       </div>
 
       <component v-if="modal.active" :is="'v-f-modal-' + modal.type" :selection="modal.data" :current="fetchData" />
@@ -28,17 +27,16 @@ export default {
 </script>
 
 <script setup>
-import { defineProps, onMounted, provide, reactive, ref } from 'vue';
-import ajax from '../utils/ajax.js';
 import mitt from 'mitt';
-import { useStorage } from '../composables/useStorage.js';
-import { useApiUrl } from '../composables/useApiUrl.js';
-import VFToolbar from '../components/Toolbar.vue';
-import VFExplorer from '../components/Explorer.vue';
-import VFStatusbar from '../components/Statusbar.vue';
+import { onMounted, provide, reactive, ref } from 'vue';
 import VFBreadcrumb from '../components/Breadcrumb.vue';
 import VFContextMenu from '../components/ContextMenu.vue';
+import VFExplorer from '../components/Explorer.vue';
+import VFToolbar from '../components/Toolbar.vue';
+import { useApiUrl } from '../composables/useApiUrl.js';
 import { useI18n } from '../composables/useI18n.js';
+import { useStorage } from '../composables/useStorage.js';
+import ajax from '../utils/ajax.js';
 
 const props = defineProps({
   url: {
@@ -59,6 +57,10 @@ const props = defineProps({
   maxHeight: {
     type: String,
     default: '600px',
+  },
+  minHeight: {
+    type: String,
+    default: '300px',
   },
   maxFileSize: {
     type: String,
