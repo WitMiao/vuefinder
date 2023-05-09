@@ -1,15 +1,15 @@
-import { defineConfig } from 'vite'
-import { resolve } from 'path'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import { resolve } from 'path';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
   plugins: [vue()],
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.js'),
-      name: 'VueFinder',
+      name: 'miao-VueFinder',
       // the proper extensions will be added
-      fileName: 'vuefinder',
+      fileName: 'miao-vuefinder',
     },
     watch: {},
     rollupOptions: {
@@ -20,13 +20,9 @@ export default defineConfig({
         // Provide global variables to use in the UMD build
         // for externalized deps
         globals: {
-          vue: 'Vue'
-        }
-      }
-    }
-  }
-})
-
-
-
-
+          vue: 'Vue',
+        },
+      },
+    },
+  },
+});
