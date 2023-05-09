@@ -1,19 +1,19 @@
 {
-  "name": "vuefinder",
-  "version": "1.2.0",
-  "description": "Vuefinder is a file manager component for vuejs.",
+  "name": "miao-vuefinder",
+  "version": "0.0.1",
+  "description": "miao-Vuefinder is a file manager component for vuejs.",
   "type": "module",
   "files": [
     "dist"
   ],
-  "main": "./dist/vuefinder.cjs",
-  "module": "./dist/vuefinder.js",
+  "main": "./dist/miao-vuefinder.cjs",
+  "module": "./dist/miao-vuefinder.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
-  "homepage": "https://github.com/n1crack/vuefinder#readme",
+  "homepage": "https://github.com/WitMiao/vuefinder#readme",
   "keywords": [
     "vue",
     "file manager",
@@ -23,28 +23,28 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/n1crack/vuefinder.git"
+    "url": "git+https://github.com/WitMiao/vuefinder.git"
   },
   "author": {
-    "name": "Yusuf Özdemir",
-    "mail": "yusuf@ozdemir.be"
+    "name": "MiaoDa",
+    "mail": "ufo025174@gmail.com"
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^18.7.1",
-    "@vitejs/plugin-vue": "^4.0.0",
-    "autoprefixer": "^10.4.8",
+    "@types/node": "^20.1.1",
+    "@vitejs/plugin-vue": "^4.2.1",
+    "autoprefixer": "^10.4.14",
     "microtip": "^0.2.2",
     "mitt": "^3.0.0",
-    "postcss": "^8.4.16",
-    "tailwindcss": "^3.1.8",
-    "vite": "^4.0.2"
+    "postcss": "^8.4.23",
+    "tailwindcss": "^3.3.2",
+    "vite": "^4.3.5"
   },
   "dependencies": {
-    "cropperjs": "^1.5.12",
-    "dragselect": "^2.3.1",
+    "cropperjs": "^1.5.13",
+    "dragselect": "^2.7.4",
     "plupload": "^2.3.9",
     "vanilla-lazyload": "^17.8.3",
-    "vue": "^3.2.0"
+    "vue": "^3.2.47"
   }
 }
