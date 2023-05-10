@@ -146,6 +146,30 @@ emitter.on('vf-fetch-abort', () => {
   loadingState.value = false;
 });
 
+function parseFileList(html) {
+  // Create an empty file list
+  const fileList = [];
+
+  // Use a regular expression to match all <a> tags in the string
+  const matches = html.matchAll(/<a href="(.+?)">(.+?)<\/a>/g);
+
+  // Iterate over the matches, extract each file's properties, and add it to the file list
+  for (const match of matches) {
+    const filePath = match[1];
+    const fileName = match[2];
+    const fileType = fileName.includes('.') ? fileName.split('.').pop() : 'dir';
+    const fileProps = {
+      type: fileType === 'dir' ? 'dir' : 'file',
+      basename: fileName,
+      path: filePath,
+      extension: fileType === 'dir' ? '' : fileType,
+    };
+    fileList.push(fileProps);
+  }
+
+  return fileList;
+}
+
 emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
   if (['index', 'search'].includes(params.q)) {
     if (controller) {
@@ -158,13 +182,17 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
   const signal = controller.signal;
   ajax(apiUrl.value, { params, signal })
     .then((data) => {
-      adapter.value = data.adapter;
+      adapter.value = apiUrl.value.split('/')[2];
+      const dirname = apiUrl.value.replace('/uploads', '');
       if (['index', 'search'].includes(params.q)) {
         loadingState.value = false;
       }
+      // 获取testData中的文件夹和文件
+      const files = parseFileList(data);
+      const getData = { adapter: adapter.value, storages: [], dirname, files };
       emitter.emit('vf-modal-close');
-      updateItems(data);
-      onSuccess(data);
+      updateItems(getData);
+      onSuccess(getData);
     })
     .catch((e) => {
       if (onError) {
