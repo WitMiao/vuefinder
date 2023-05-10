@@ -12,7 +12,7 @@
               params: {
                 q: 'index',
                 adapter: data.adapter,
-                path: breadcrumb[breadcrumb.length - 2]?.path ?? adapter + '://',
+                path: breadcrumb[breadcrumb.length - 3]?.path ?? adapter + '://',
               },
             })
         "
@@ -187,7 +187,7 @@ emitter.on('vf-explorer-update', () => {
         links.push({
           basename: item,
           name: item,
-          path: adapter.value + '://' + items.join('/'),
+          path: items.join('/') + '/',
           type: 'dir',
         });
       }
@@ -197,7 +197,6 @@ emitter.on('vf-explorer-update', () => {
     links = links.slice(-5);
     links[0].name = '..';
   }
-
   breadcrumb.value = links;
 });
 
@@ -225,7 +224,7 @@ watch(query, (newQuery) => {
 });
 
 const isGoUpAvailable = () => {
-  return breadcrumb.value.length && !searchMode.value;
+  return breadcrumb.value.length > 2 && !searchMode.value;
 };
 
 const handleDropZone = (e) => {

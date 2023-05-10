@@ -90,6 +90,8 @@ provide('i18n', i18n);
 
 const { apiUrl, setApiUrl } = useApiUrl();
 setApiUrl(props.url);
+const apiPrefix = '/uploads';
+const curPath = ref(apiUrl.value);
 
 const fetchData = reactive({ adapter: adapter.value, storages: [], dirname: '.', files: [] });
 
@@ -160,7 +162,7 @@ function parseFileList(html) {
     const fileType = fileName.includes('.') ? fileName.split('.').pop() : 'dir';
     const fileProps = {
       type: fileType === 'dir' ? 'dir' : 'file',
-      basename: fileName,
+      basename: fileType === 'dir' ? fileName.split('/')[0] : fileName,
       path: filePath,
       extension: fileType === 'dir' ? '' : fileType,
     };
@@ -171,27 +173,33 @@ function parseFileList(html) {
 }
 
 emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
+  let curUrl = apiUrl.value + '';
   if (['index', 'search'].includes(params.q)) {
     if (controller) {
       controller.abort();
     }
     loadingState.value = true;
+    if (params.path === adapter.value + '://' || (adapter.value && !params.path)) {
+      curUrl = `${apiPrefix}/${adapter.value}/`;
+    } else if (params.path?.startsWith('/')) {
+      curUrl = apiPrefix + params.path;
+    } else {
+      curUrl = curPath.value + (params.path || '');
+    }
+    curPath.value = curUrl;
   }
-
   controller = new AbortController();
   const signal = controller.signal;
-  ajax(apiUrl.value, { params, signal })
+  ajax(curUrl, { params, signal })
     .then((res) => {
-      console.log('res: ', res);
-      adapter.value = apiUrl.value.split('/')[2];
-      const dirname = apiUrl.value.replace('/uploads', '');
+      const dirname = curUrl.replace(apiPrefix, '');
+      adapter.value = dirname.split('/')[1];
       if (['index', 'search'].includes(params.q)) {
         loadingState.value = false;
       }
       // 获取testData中的文件夹和文件
-      const files = parseFileList(res.data);
+      const files = parseFileList(res);
       const getData = { adapter: adapter.value, storages: [], dirname, files };
-      console.log('getData: ', getData);
       emitter.emit('vf-modal-close');
       updateItems(getData);
       onSuccess(getData);
@@ -204,8 +212,8 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
     .finally(() => {});
 });
 
-emitter.on('vf-download', (url) => {
-  document.getElementById('download_frame').src = url;
+emitter.on('vf-download', (path) => {
+  document.getElementById('download_frame').src = curPath.value + path;
   emitter.emit('vf-modal-close');
 });
 

@@ -26,7 +26,6 @@ export default {
 <script setup>
 import { inject, nextTick, reactive, ref } from 'vue';
 import { useApiUrl } from '../composables/useApiUrl.js';
-import buildURLQuery from '../utils/buildURLQuery.js';
 
 const emitter = inject('emitter');
 const contextmenu = ref(null);
@@ -99,11 +98,7 @@ const menuItems = {
   download: {
     title: () => t('Download'),
     action: () => {
-      const url =
-        apiUrl.value +
-        '?' +
-        buildURLQuery({ q: 'download', adapter: props.current.adapter, path: selectedItems.value[0].path });
-      emitter.emit('vf-download', url);
+      emitter.emit('vf-download', selectedItems.value[0].path);
     },
   },
   archive: {

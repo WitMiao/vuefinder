@@ -392,7 +392,8 @@ const openItem = (item) => {
     emitter.emit('vf-search-exit');
     emitter.emit('vf-fetch', { params: { q: 'index', adapter: props.data.adapter, path: item.path } });
   } else {
-    emitter.emit('vf-modal-show', { type: 'preview', adapter: props.data.adapter, item });
+    // emitter.emit('vf-modal-show', { type: 'preview', adapter: props.data.adapter, item });
+    emitter.emit('vf-download', item.path);
   }
 };
 

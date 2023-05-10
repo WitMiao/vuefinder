@@ -9,7 +9,7 @@
   "main": "./dist/miao-vuefinder.cjs",
   "module": "./dist/miao-vuefinder.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite ./example",
     "build": "vite build",
     "preview": "vite preview",
     "pb": "npm publish",
