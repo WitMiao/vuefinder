@@ -181,15 +181,17 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
   controller = new AbortController();
   const signal = controller.signal;
   ajax(apiUrl.value, { params, signal })
-    .then((data) => {
+    .then((res) => {
+      console.log('res: ', res);
       adapter.value = apiUrl.value.split('/')[2];
       const dirname = apiUrl.value.replace('/uploads', '');
       if (['index', 'search'].includes(params.q)) {
         loadingState.value = false;
       }
       // 获取testData中的文件夹和文件
-      const files = parseFileList(data);
+      const files = parseFileList(res.data);
       const getData = { adapter: adapter.value, storages: [], dirname, files };
+      console.log('getData: ', getData);
       emitter.emit('vf-modal-close');
       updateItems(getData);
       onSuccess(getData);
