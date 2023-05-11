@@ -1,32 +1,37 @@
-## Vuefinder File Manager
+## Miao-Vuefinder File Manager
 
-![GitHub](https://img.shields.io/github/license/n1crack/vuefinder)
-![npm](https://img.shields.io/npm/v/vuefinder)
+**This is a special version for NGINX, remove the edit function, double-click to download,and add Chinese;
+The url is the nginx original proxy path.**
 
-[//]: # (![npm]&#40;https://img.shields.io/npm/dw/vuefinder&#41;)
+![GitHub](https://img.shields.io/github/license/WitMiao/vuefinder)
+![npm](https://img.shields.io/npm/v/miao-vuefinder)
+
+[//]: # (![npm]&#40;https://img.shields.io/npm/dw/miao-vuefinder&#41;)
 
 ![ezgif-1-b902690b76](https://user-images.githubusercontent.com/712404/193141338-8d5f726f-da1a-4825-b652-28e4007493db.gif)
 
 ### About
+
 Vuefinder is a file manager component for Vue.js version 3
 
-### Demo
+### Origin Demo
+
 [Live Demo](https://vuefinder.ozdemir.be/) [ [Source](https://github.com/n1crack/vuefinder.ozdemir.be) ]
 
 ### Installation
 
-
 ```bash
-npm i vuefinder
+npm i miao-vuefinder
 ```
 
 JS entry point (it can be index.js or main.js)
+
 ```js
 import { createApp } from 'vue'
 import App from './App.vue'
 
-import 'vuefinder/dist/style.css'
-import VueFinder from 'vuefinder/dist/vuefinder'
+import 'miao-vuefinder/dist/style.css'
+import VueFinder from 'miao-vuefinder/dist/vuefinder'
 
 const app = createApp(App)
 
@@ -35,7 +40,9 @@ app.use(VueFinder)
 app.mount('#app')
  
 ```
+
 Html
+
 ```html
 ...
 <div>
@@ -54,19 +61,20 @@ Html
 | dark          | boolean | false   | optional - makes theme dark as default |
 | max-file-size | string  | 10mb    | optional - client side max file upload |
 
-### Features 
-- Multi adapter/storage (see https://github.com/thephpleague/flysystem)
+### Features
+
+- Multi adapter/storage (see <https://github.com/thephpleague/flysystem>)
 - File and folder operations
-  - Create a new file 
-  - Create a new folder 
-  - Rename 
-  - Delete 
+  - Create a new file
+  - Create a new folder
+  - Rename
+  - Delete
   - Archive (zip)
   - Unarchive (unzip)
   - Text editing
   - Image Crop Tool
   - Upload / Download files
-  - Search (deep based on current folder) 
+  - Search (deep based on current folder)
 - Nice UI
   - Context Menu
   - Breadcrumb links
@@ -86,9 +94,11 @@ Html
   - Mouse selection
 
 ### Backend
+
 - PHP: [VueFinder Php Library](https://github.com/n1crack/vuefinder-php)
 
 ### Roadmap
+
 - [ ] code refactoring (cleanup the duplications, make reusable components)
 - [ ] restyle the modals
 - [ ] add more languages (only en/tr/ru at the moment. PRs are welcomed.)
@@ -100,11 +110,13 @@ Html
 - [ ] update DragSelect plugin for using its dropzone support
 
 ### Dependencies
- - [Vue3](https://vuejs.org/)
- - [Cropperjs](https://github.com/fengyuanchen/cropperjs)  : JavaScript image cropper
- - [DragSelect](https://github.com/ThibaultJanBeyer/DragSelect/) : Selection utility
- - [Plupload](https://github.com/moxiecode/plupload) : Upload library
- - [vanilla-lazyload](https://github.com/verlok/vanilla-lazyload) : lazy loading for thumbnails
+
+- [Vue3](https://vuejs.org/)
+- [Cropperjs](https://github.com/fengyuanchen/cropperjs)  : JavaScript image cropper
+- [DragSelect](https://github.com/ThibaultJanBeyer/DragSelect/) : Selection utility
+- [Plupload](https://github.com/moxiecode/plupload) : Upload library
+- [vanilla-lazyload](https://github.com/verlok/vanilla-lazyload) : lazy loading for thumbnails
 
 ### License
-Copyright (c) 2018 Yusuf ÖZDEMİR, released under [the MIT license](LICENSE)
+
+Copyright (c) 2023 MiaoDa, released under [the MIT license](LICENSE)
