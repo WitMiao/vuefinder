@@ -212,8 +212,7 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
 });
 
 emitter.on('vf-download', (path) => {
-  console.log('curPath.value + path: ', curPath.value + path);
-  downloadByUrl(curPath.value + path);
+  downloadByUrl({ url: curPath.value + path });
   emitter.emit('vf-modal-close');
 });
 
