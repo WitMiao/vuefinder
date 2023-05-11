@@ -158,7 +158,7 @@ function parseFileList(html) {
   for (const match of matches) {
     const filePath = match[1];
     const fileName = match[2];
-    const fileType = fileName.includes('.') ? fileName.split('.').pop() : 'dir';
+    const fileType = fileName.endsWith('/') ? 'dir' : fileName.split('.').pop();
     const fileProps = {
       type: fileType === 'dir' ? 'dir' : 'file',
       basename: fileType === 'dir' ? fileName.split('/')[0] : fileName,
