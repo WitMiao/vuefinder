@@ -16,7 +16,6 @@
 
       <component v-if="modal.active" :is="'v-f-modal-' + modal.type" :selection="modal.data" :current="fetchData" />
       <v-f-context-menu :current="fetchData" />
-      <iframe id="download_frame" style="display: none"></iframe>
     </div>
   </div>
 </template>
@@ -39,7 +38,7 @@ import { useApiUrl } from '../composables/useApiUrl.js';
 import { useI18n } from '../composables/useI18n.js';
 import { useStorage } from '../composables/useStorage.js';
 import ajax from '../utils/ajax.js';
-
+import { downloadByUrl } from '../utils/download.js';
 const props = defineProps({
   url: {
     type: [String],
@@ -213,7 +212,8 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
 });
 
 emitter.on('vf-download', (path) => {
-  document.getElementById('download_frame').src = curPath.value + path;
+  console.log('curPath.value + path: ', curPath.value + path);
+  downloadByUrl(curPath.value + path);
   emitter.emit('vf-modal-close');
 });
 
