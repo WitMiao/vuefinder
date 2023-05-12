@@ -2,7 +2,7 @@ import { ref } from 'vue';
 
 const apiUrl = ref('');
 const curPath = ref('');
-const apiPrefix = '/uploads';
+const rootPath = ref('');
 
 export function useApiUrl() {
   function setApiUrl(url) {
@@ -12,5 +12,9 @@ export function useApiUrl() {
   function setCurPath(path) {
     curPath.value = path;
   }
-  return { apiUrl, setApiUrl, curPath, setCurPath, apiPrefix };
+
+  function setRootPath(path) {
+    rootPath.value = path;
+  }
+  return { apiUrl, setApiUrl, curPath, setCurPath, rootPath, setRootPath };
 }

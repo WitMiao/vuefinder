@@ -87,11 +87,11 @@ const i18n = useI18n(props.id, props.locale, emitter);
 const { t } = i18n;
 provide('i18n', i18n);
 
-const { apiUrl, setApiUrl, curPath, setCurPath, apiPrefix } = useApiUrl();
+const { apiUrl, setApiUrl, curPath, setCurPath, rootPath, setRootPath } = useApiUrl();
 
 setApiUrl(props.url);
 setCurPath(props.url);
-
+setRootPath(props.url.split('/').slice(0, -2).join('/'));
 const fetchData = reactive({ adapter: adapter.value, storages: [], dirname: '.', files: [] });
 
 // View Management
@@ -222,9 +222,9 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
     }
     loadingState.value = true;
     if (params.path === adapter.value + '://' || (adapter.value && !params.path)) {
-      curUrl = `${apiPrefix}/${adapter.value}/`;
+      curUrl = `${rootPath.value}/${adapter.value}/`;
     } else if (params.path?.startsWith('/')) {
-      curUrl = apiPrefix + params.path;
+      curUrl = rootPath.value + params.path;
     } else {
       curUrl = curPath.value + (params.path || '');
     }
@@ -234,7 +234,7 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
   const signal = controller.signal;
   ajax(curUrl, { params, signal })
     .then((res) => {
-      const dirname = curUrl.replace(apiPrefix, '');
+      const dirname = curUrl.replace(rootPath.value, '');
       adapter.value = dirname.split('/')[1];
       if (['index', 'search'].includes(params.q)) {
         loadingState.value = false;

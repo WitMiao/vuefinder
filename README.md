@@ -1,6 +1,6 @@
 ## Miao-Vuefinder File Manager
 
-**This is a special version for NGINX, remove the edit function, double-click to download,and add Chinese;
+**This is a special version for NGINX, remove the edit function, and add Chinese;
 The url is the nginx original proxy path.**
 
 ![GitHub](https://img.shields.io/github/license/WitMiao/vuefinder)
