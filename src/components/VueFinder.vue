@@ -87,10 +87,10 @@ const i18n = useI18n(props.id, props.locale, emitter);
 const { t } = i18n;
 provide('i18n', i18n);
 
-const { apiUrl, setApiUrl } = useApiUrl();
+const { apiUrl, setApiUrl, curPath, setCurPath, apiPrefix } = useApiUrl();
+
 setApiUrl(props.url);
-const apiPrefix = '/uploads';
-const curPath = ref(apiUrl.value);
+setCurPath(props.url);
 
 const fetchData = reactive({ adapter: adapter.value, storages: [], dirname: '.', files: [] });
 
@@ -159,11 +159,53 @@ function parseFileList(html) {
     const filePath = match[1];
     const fileName = match[2];
     const fileType = fileName.endsWith('/') ? 'dir' : fileName.split('.').pop();
+    let mime_type = '';
+    switch (fileType) {
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+      case 'svg':
+        mime_type = 'image';
+        break;
+      case 'mp3':
+      case 'wav':
+      case 'ogg':
+        mime_type = 'audio';
+        break;
+      case 'mp4':
+      case 'webm':
+      case 'mov':
+      case 'avi':
+      case 'wmv':
+      case 'mpg':
+      case 'mpeg':
+        mime_type = 'video';
+        break;
+      case 'pdf':
+        mime_type = 'application/pdf';
+        break;
+      case 'zip':
+        mime_type = 'application/zip';
+        break;
+      case 'dir':
+        mime_type = 'dir';
+        break;
+      case 'txt':
+      case 'md':
+      case 'py':
+      case 'log':
+        mime_type = 'text';
+        break;
+      default:
+        mime_type = 'file';
+    }
     const fileProps = {
       type: fileType === 'dir' ? 'dir' : 'file',
       basename: fileType === 'dir' ? fileName.split('/')[0] : fileName,
       path: filePath,
       extension: fileType === 'dir' ? '' : fileType,
+      mime_type,
     };
     fileList.push(fileProps);
   }
@@ -185,7 +227,7 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
     } else {
       curUrl = curPath.value + (params.path || '');
     }
-    curPath.value = curUrl;
+    setCurPath(curUrl);
   }
   controller = new AbortController();
   const signal = controller.signal;

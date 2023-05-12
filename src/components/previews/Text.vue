@@ -38,8 +38,8 @@
 
 <script setup>
 import { inject, nextTick, onMounted, ref } from 'vue';
-import ajax from '../../utils/ajax.js';
 import { useApiUrl } from '../../composables/useApiUrl.js';
+import ajax from '../../utils/ajax.js';
 import Message from '../Message.vue';
 
 const emit = defineEmits(['load']);
@@ -47,7 +47,7 @@ const content = ref('');
 const contentTemp = ref('');
 const editInput = ref(null);
 const showEdit = ref(false);
-const { apiUrl } = useApiUrl();
+const { apiUrl, curPath } = useApiUrl();
 const props = defineProps({
   selection: Object,
 });
@@ -57,8 +57,7 @@ const isError = ref(false);
 const { t } = inject('i18n');
 
 onMounted(() => {
-  ajax(apiUrl.value, {
-    params: { q: 'preview', adapter: props.selection.adapter, path: props.selection.item.path },
+  ajax(curPath.value + props.selection.item.path, {
     json: false,
   }).then((data) => {
     content.value = data;

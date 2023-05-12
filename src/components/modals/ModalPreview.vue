@@ -95,7 +95,6 @@ const setLoad = (bool) => (loaded.value = bool);
 const props = defineProps({
   selection: Object,
 });
-
 const loadPreview = (type) => (props.selection.item.mime_type ?? '').startsWith(type);
 
 const download = () => {
