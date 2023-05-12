@@ -195,6 +195,7 @@ function parseFileList(html) {
       case 'md':
       case 'py':
       case 'log':
+      case 'json':
         mime_type = 'text';
         break;
       default:
