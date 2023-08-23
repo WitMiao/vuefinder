@@ -28,7 +28,7 @@ export default {
 </script>
 
 <script setup>
-import { defineProps, onMounted, provide, reactive, ref } from 'vue';
+import { computed, defineProps, onMounted, provide, reactive, ref } from 'vue';
 import ajax from '../utils/ajax.js';
 import mitt from 'mitt';
 import { useStorage } from '../composables/useStorage.js';
@@ -49,6 +49,14 @@ const props = defineProps({
     default: 'vf',
   },
   dark: {
+    type: Boolean,
+    default: false,
+  },
+  usePropDarkMode: {
+    type: Boolean,
+    default: false,
+  },
+  usePropDarkMode: {
     type: Boolean,
     default: false,
   },
@@ -82,6 +90,7 @@ provide('storage', useStorage(props.id));
 provide('postData', props.postData);
 provide('adapter', adapter);
 provide('maxFileSize', props.maxFileSize);
+provide('usePropDarkMode', props.usePropDarkMode);
 
 // Lang Management
 const i18n = useI18n(props.id, props.locale, emitter);
@@ -95,7 +104,7 @@ const fetchData = reactive({ adapter: adapter.value, storages: [], dirname: '.',
 
 // View Management
 const view = ref(getStore('viewport', 'grid'));
-const darkMode = ref(getStore('darkMode', props.dark));
+const darkMode = props.usePropDarkMode ? computed(() => props.dark) : ref(getStore('darkMode', props.dark));
 
 emitter.on('vf-darkMode-toggle', () => {
   darkMode.value = !darkMode.value;
