@@ -45,6 +45,8 @@ import { inject, ref } from 'vue';
 
 const emitter = inject('emitter');
 
+const usePropDarkMode = inject('usePropDarkMode');
+
 const { getStore, setStore } = inject('storage');
 
 const { t } = inject('i18n');
