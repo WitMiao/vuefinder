@@ -27,9 +27,8 @@ export default {
 </script>
 
 <script setup>
-import { computed, onMounted, provide, reactive, ref } from 'vue';
-import ajax from '../utils/ajax.js';
 import mitt from 'mitt';
+import { computed, onMounted, provide, reactive, ref } from 'vue';
 import VFBreadcrumb from '../components/Breadcrumb.vue';
 import VFContextMenu from '../components/ContextMenu.vue';
 import VFExplorer from '../components/Explorer.vue';
