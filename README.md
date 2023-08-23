@@ -1,7 +1,7 @@
 ## Miao-Vuefinder File Manager
 
-**This is a special version for NGINX, remove the edit function, and add Chinese;
-The url is the nginx original proxy path.**
+**This is a special version, remove the edit function, and add Chinese;
+
 
 ![GitHub](https://img.shields.io/github/license/WitMiao/vuefinder)
 ![npm](https://img.shields.io/npm/v/miao-vuefinder)
@@ -56,10 +56,14 @@ Html
 | Prop          |  Value  | Default | Description                            |
 |---------------|:-------:|---------|:---------------------------------------|
 | id            | string  | _null_  | required                               |
-| url           | string  | _null_  | required - backend url                 |
+| url           | string  | _null_  | required - dir url                     |
+| api           | string  | _null_  | required - backend api url             |
+| token         | string  | _null_  | required - backend api x-Token         |
 | locale        | string  | en      | optional - default language code       |
 | dark          | boolean | false   | optional - makes theme dark as default |
 | max-file-size | string  | 10mb    | optional - client side max file upload |
+| post-data     | object  | {}      | optional - custom post data            |
+| full-screen   | boolean | false   | optional - makes full-screen as default|
 
 ### Features
 

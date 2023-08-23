@@ -57,7 +57,7 @@ const isError = ref(false);
 const { t } = inject('i18n');
 
 onMounted(() => {
-  ajax(curPath.value + props.selection.item.path, {
+  ajax(props.selection.item.path, {
     json: false,
   }).then((data) => {
     content.value = data;

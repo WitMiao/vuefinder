@@ -6,8 +6,14 @@ export const viteVue3Config = defineConfig({
   server: {
     port: 3000,
     proxy: {
+      '/api': {
+        target: 'https://t-tech.int.hypergryph.com/api/api',
+        changeOrigin: true,
+        ws: true,
+        rewrite: (path) => path.replace(new RegExp(`^/api`), ''),
+      },
       '/uploads': {
-        target: 'http://10.154.0.59:8888/uploads',
+        target: 'https://t-tech.int.hypergryph.com/uploads',
         changeOrigin: true,
         ws: true,
         rewrite: (path) => path.replace(new RegExp(`^/uploads`), ''),

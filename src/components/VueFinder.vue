@@ -43,6 +43,12 @@ const props = defineProps({
   url: {
     type: [String],
   },
+  api: {
+    type: [String],
+  },
+  token: {
+    type: [String],
+  },
   id: {
     type: String,
     default: 'vf',
@@ -94,7 +100,7 @@ provide('i18n', i18n);
 
 const { apiUrl, setApiUrl, curPath, setCurPath, rootPath, setRootPath } = useApiUrl();
 
-setApiUrl(props.url);
+setApiUrl(props.api);
 setCurPath(props.url);
 setRootPath(props.url.split('/').slice(0, -2).join('/'));
 const fetchData = reactive({ adapter: adapter.value, storages: [], dirname: '.', files: [] });
@@ -152,18 +158,14 @@ emitter.on('vf-fetch-abort', () => {
   loadingState.value = false;
 });
 
-function parseFileList(html) {
+function parseFileList(list) {
   // Create an empty file list
   const fileList = [];
-
-  // Use a regular expression to match all <a> tags in the string
-  const matches = html.matchAll(/<a href="(.+?)">(.+?)<\/a>/g);
-
-  // Iterate over the matches, extract each file's properties, and add it to the file list
-  for (const match of matches) {
-    const filePath = match[1];
-    const fileName = match[2];
-    const fileType = fileName.endsWith('/') ? 'dir' : fileName.split('.').pop();
+  // Iterate recursively through the file list
+  list.forEach((e) => {
+    const filePath = e.path;
+    const fileName = e.name;
+    const fileType = e.type === 'dir' ? 'dir' : fileName.split('.').pop();
     let mime_type = '';
     switch (fileType) {
       case 'jpg':
@@ -207,45 +209,43 @@ function parseFileList(html) {
         mime_type = 'file';
     }
     const fileProps = {
-      type: fileType === 'dir' ? 'dir' : 'file',
+      type: e.type,
       basename: fileType === 'dir' ? fileName.split('/')[0] : fileName,
-      path: filePath,
+      path: fileType === 'dir' ? filePath + '/' : filePath,
       extension: fileType === 'dir' ? '' : fileType,
       mime_type,
     };
     fileList.push(fileProps);
-  }
-
+  });
   return fileList;
 }
 
 emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
-  let curUrl = apiUrl.value + '';
+  let curUrl = curPath.value + '';
   if (['index', 'search'].includes(params.q)) {
     if (controller) {
       controller.abort();
     }
     loadingState.value = true;
-    if (params.path === adapter.value + '://' || (adapter.value && !params.path)) {
-      curUrl = `${rootPath.value}/${adapter.value}/`;
-    } else if (params.path?.startsWith('/')) {
-      curUrl = rootPath.value + params.path;
-    } else {
-      curUrl = curPath.value + (params.path || '');
-    }
-    setCurPath(curUrl);
+    params.path = params.path
+      ? params.path?.startsWith(rootPath.value)
+        ? params.path
+        : rootPath.value + params.path
+      : curUrl;
+    setCurPath(params.path);
   }
   controller = new AbortController();
   const signal = controller.signal;
-  ajax(curUrl, { params, signal })
+  ajax(apiUrl.value, { params, signal, token: props.token })
     .then((res) => {
-      const dirname = curUrl.replace(rootPath.value, '');
+      const result = JSON.parse(res);
+      const dirname = params.path.replace(rootPath.value, '');
       adapter.value = dirname.split('/')[1];
       if (['index', 'search'].includes(params.q)) {
         loadingState.value = false;
       }
       // 获取testData中的文件夹和文件
-      const files = parseFileList(res);
+      const files = parseFileList(result?.data?.data);
       const getData = { adapter: adapter.value, storages: [], dirname, files };
       emitter.emit('vf-modal-close');
       updateItems(getData);
@@ -260,7 +260,7 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
 });
 
 emitter.on('vf-download', (path) => {
-  downloadByUrl({ url: curPath.value + path });
+  downloadByUrl({ url: path });
   emitter.emit('vf-modal-close');
 });
 
