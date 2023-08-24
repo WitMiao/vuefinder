@@ -239,6 +239,12 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
   ajax(apiUrl.value, { params, signal, token: props.token })
     .then((res) => {
       const result = JSON.parse(res);
+      if (result?.code !== 0) {
+        emitter.emit('vf-toast-push', {
+          label: '无权限访问此目录, 请联系管理员.',
+        });
+        return;
+      }
       const dirname = params.path.replace(rootPath.value, '');
       adapter.value = dirname.split('/')[1];
       if (['index', 'search'].includes(params.q)) {

@@ -21,7 +21,7 @@
   "Dark Mode": "Тёмный режим",
   "Toggle Full Screen": "Полный экран",
   "Change View": "Изменить вид",
-  "Storage" : "Хранилище",
+  "Storage": "Хранилище",
   "Go up a directory": "Вверх",
   "Search anything..": "Поиск...",
   "Name": "Название",
@@ -63,5 +63,7 @@
   "File Size": "Размер файла",
   "Last Modified": "Последнее изменение",
   "Drag&Drop: on": "Drag&Drop: on",
-  "Drag&Drop: off": "Drag&Drop: off"
+  "Drag&Drop: off": "Drag&Drop: off",
+  "The selected file exceeds the maximum file size. You cannot upload files greater than %s": "Выбранный файл превышает максимальный размер файла. Вы не можете загружать файлы больше %s",
+  "No permission": "Нет доступа к этой директории, пожалуйста, свяжитесь с администратором."
 }
