@@ -65,5 +65,6 @@
   "Drag&Drop: on": "拖拽: 开",
   "Drag&Drop: off": "拖拽: 关",
   "The selected file exceeds the maximum file size. You cannot upload files greater than %s": "所选文件超过了最大文件大小. 你不能上传大于 %s 的文件",
-  "No permission": "无权限访问此目录, 请联系管理员."
+  "No permission": "无权限访问此目录, 请联系管理员.",
+  "The selected file exceeds the maximum preview file size, please download to preview.": "所选文件超过了最大预览文件大小, 请下载查看."
 }

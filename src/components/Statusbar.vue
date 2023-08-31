@@ -29,7 +29,7 @@ const adapter = inject('adapter');
 
 const { t, changeLocale } = inject('i18n');
 
-const locale = ref(getStore('locale', ''));
+const locale = ref(getStore('locale-new', ''));
 
 const handleStorageSelect = () => {
   emitter.emit('vf-search-exit');

@@ -65,5 +65,6 @@
   "Drag&Drop: on": "Drag&Drop: an",
   "Drag&Drop: off": "Drag&Drop: aus",
   "The selected file exceeds the maximum file size. You cannot upload files greater than %s": "Die ausgewählte Datei überschreitet die maximale Dateigröße. Sie können keine Dateien hochladen, die größer sind als %s",
-  "No permission": "Keine Berechtigung zum Zugriff auf dieses Verzeichnis, bitte kontaktieren Sie den Administrator."
+  "No permission": "Keine Berechtigung zum Zugriff auf dieses Verzeichnis, bitte kontaktieren Sie den Administrator.",
+  "The selected file exceeds the maximum preview file size, please download to preview.": "Die ausgewählte Datei überschreitet die maximale Vorschaigröße, bitte laden Sie sie herunter, um sie anzuzeigen."
 }

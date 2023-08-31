@@ -65,5 +65,6 @@
   "Drag&Drop: on": "Sürükle&Bırak: etkin",
   "Drag&Drop: off": "Sürükle&Bırak: devre dışı",
   "The selected file exceeds the maximum file size. You cannot upload files greater than %s": "Seçilen dosya maksimum dosya boyutunu aşıyor. %s'den büyük dosyaları yükleyemezsiniz.",
-  "No permission": "Bu dizine erişim izniniz yok, lütfen yöneticiyle iletişime geçin."
+  "No permission": "Bu dizine erişim izniniz yok, lütfen yöneticiyle iletişime geçin.",
+  "The selected file exceeds the maximum preview file size, please download to preview.": "Seçilen dosya, maksimum önizleme dosya boyutunu aşıyor, lütfen önizleme yapmak için indirin."
 }

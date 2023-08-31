@@ -16,22 +16,24 @@
     </div>
   </div>
   <div>
-    <pre
-      v-if="!showEdit"
-      class="p-2 border font-normal whitespace-pre-wrap border-gray-200 dark:border-gray-700/50 dark:text-gray-200 rounded min-h-[200px] max-h-[60vh] text-xs overflow-auto"
-      >{{ content }}</pre
-    >
-    <div v-else>
-      <textarea
-        ref="editInput"
-        v-model="contentTemp"
-        class="w-full p-2 rounded dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-600 dark:focus:border-gray-600 dark:selection:bg-gray-500 min-h-[200px] max-h-[60vh] text-xs"
-        name="text"
-        id=""
-        cols="30"
-        rows="10"
-      ></textarea>
-    </div>
+    <template v-if="!isFileToLarge">
+      <pre
+        v-if="!showEdit"
+        class="p-2 border font-normal whitespace-pre-wrap border-gray-200 dark:border-gray-700/50 dark:text-gray-200 rounded min-h-[200px] max-h-[60vh] text-xs overflow-auto"
+        >{{ content }}</pre
+      >
+      <div v-else>
+        <textarea
+          ref="editInput"
+          v-model="contentTemp"
+          class="w-full p-2 rounded dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-600 dark:focus:border-gray-600 dark:selection:bg-gray-500 min-h-[200px] max-h-[60vh] text-xs"
+          name="text"
+          id=""
+          cols="30"
+          rows="10"
+        ></textarea>
+      </div>
+    </template>
     <message v-if="message.length" @hidden="message = ''" :error="isError">{{ message }}</message>
   </div>
 </template>
@@ -53,16 +55,22 @@ const props = defineProps({
 });
 const message = ref('');
 const isError = ref(false);
-
+const isFileToLarge = ref(false);
 const { t } = inject('i18n');
 
 onMounted(() => {
-  ajax(props.selection.item.path, {
-    json: false,
-  }).then((data) => {
-    content.value = data;
+  if (props.selection?.item?.file_size > 1024 * 1024 * 50) {
+    message.value = t('The selected file exceeds the maximum preview file size, please download to preview.');
     emit('load');
-  });
+    isFileToLarge.value = true;
+  } else {
+    ajax(props.selection.item.path, {
+      json: false,
+    }).then((data) => {
+      content.value = data;
+      emit('load');
+    });
+  }
 });
 
 const editMode = () => {

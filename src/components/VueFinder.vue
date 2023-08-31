@@ -214,6 +214,8 @@ function parseFileList(list) {
       path: fileType === 'dir' ? filePath + '/' : filePath,
       extension: fileType === 'dir' ? '' : fileType,
       mime_type,
+      file_size: e.size,
+      last_modified: e.time,
     };
     fileList.push(fileProps);
   });
@@ -241,7 +243,7 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
       const result = JSON.parse(res);
       if (result?.code !== 0) {
         emitter.emit('vf-toast-push', {
-          label: '无权限访问此目录, 请联系管理员.',
+          label: t('No permission'),
         });
         return;
       }
