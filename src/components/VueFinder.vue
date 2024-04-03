@@ -8,7 +8,7 @@
         @mousedown="emitter.emit('vf-contextmenu-hide')"
         @touchstart="emitter.emit('vf-contextmenu-hide')"
       >
-        <v-f-toolbar :data="fetchData" />
+        <v-f-toolbar :data="fetchData" v-if="showToolbar" />
         <v-f-breadcrumb :data="fetchData" />
         <v-f-explorer :view="view" :data="fetchData" />
         <v-f-statusbar :data="fetchData" />
@@ -80,6 +80,10 @@ const props = defineProps({
   fullScreen: {
     type: Boolean,
     default: false,
+  },
+  showToolbar: {
+    type: Boolean,
+    default: true,
   },
 });
 const emitter = mitt();
