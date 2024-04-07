@@ -51,7 +51,7 @@ emitter.on('vf-context-selected', (items) => {
   selectedItems.value = items;
 });
 const { t } = inject('i18n');
-
+const root = inject('root');
 const menuItems = {
   newfolder: {
     title: () => t('New Folder'),
@@ -183,14 +183,16 @@ const showContextMenu = (event, area) => {
   context.active = true;
 
   nextTick(() => {
-    let container = area.getBoundingClientRect();
-    let left = event.pageX;
-    let top = event.pageY;
+    const rootBbox = root.value.getBoundingClientRect();
+    const areaContainer = area.getBoundingClientRect();
+
+    let left = event.pageX - rootBbox.left;
+    let top = event.pageY - rootBbox.top;
     let menuHeight = contextmenu.value.offsetHeight;
     let menuWidth = contextmenu.value.offsetWidth;
 
-    left = container.right - event.pageX + window.scrollX < menuWidth ? left - menuWidth : left;
-    top = container.bottom - event.pageY + window.scrollY < menuHeight ? top - menuHeight : top;
+    left = areaContainer.right - event.pageX + window.scrollX < menuWidth ? left - menuWidth : left;
+    top = areaContainer.bottom - event.pageY + window.scrollY < menuHeight ? top - menuHeight : top;
 
     context.positions = {
       left: left + 'px',
