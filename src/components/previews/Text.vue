@@ -1,13 +1,8 @@
 <template>
   <div class="flex">
-    <div
-      class="mb-2 text-lg leading-6 font-medium text-gray-900 dark:text-gray-400"
-      id="modal-title"
-      :aria-label="selection.item.path"
-      data-microtip-position="bottom-right"
-      role="tooltip"
-    >
-      {{ selection.item.basename }}
+    <div class="mb-2 text-lg leading-6 font-medium text-gray-900 dark:text-gray-400" id="modal-title"
+      :aria-label="selection?.item?.path" data-microtip-position="bottom-right" role="tooltip">
+      {{ selection?.item?.basename }}
     </div>
     <div class="ml-auto mb-2">
       <!-- <button @click="save" class="ml-1 px-2 py-1 rounded border border-transparent shadow-sm bg-blue-700/75 hover:bg-blue-700 dark:bg-gray-700 dark:hover:bg-gray-700/50  text-base font-medium text-white sm:ml-3 sm:w-auto sm:text-sm" v-if="showEdit">
@@ -17,37 +12,33 @@
   </div>
   <div>
     <template v-if="!isFileToLarge">
-      <pre
+      <!-- <pre
         v-if="!showEdit"
         class="p-2 border font-normal whitespace-pre-wrap border-gray-200 dark:border-gray-700/50 dark:text-gray-200 rounded min-h-[200px] max-h-[60vh] text-xs overflow-auto"
         >{{ content }}</pre
-      >
+      > -->
+      <div id="container" v-if="!showEdit" style="height: 500px"></div>
       <div v-else>
-        <textarea
-          ref="editInput"
-          v-model="contentTemp"
+        <textarea ref="editInput" v-model="contentTemp"
           class="w-full p-2 rounded dark:bg-gray-700 dark:text-gray-200 dark:focus:ring-gray-600 dark:focus:border-gray-600 dark:selection:bg-gray-500 min-h-[200px] max-h-[60vh] text-xs"
-          name="text"
-          id=""
-          cols="30"
-          rows="10"
-        ></textarea>
+          name="text" id="" cols="30" rows="10"></textarea>
       </div>
     </template>
     <message v-if="message.length" @hidden="message = ''" :error="isError">{{ message }}</message>
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
+import * as monaco from 'monaco-editor';
 import { inject, nextTick, onMounted, ref } from 'vue';
-import { useApiUrl } from '../../composables/useApiUrl.js';
-import ajax from '../../utils/ajax.js';
+import { useApiUrl } from '../../composables/useApiUrl';
+import ajax from '../../utils/ajax';
 import Message from '../Message.vue';
 
 const emit = defineEmits(['load']);
 const content = ref('');
 const contentTemp = ref('');
-const editInput = ref(null);
+const editInput = ref<HTMLTextAreaElement | null>(null);
 const showEdit = ref(false);
 const { apiUrl, curPath } = useApiUrl();
 const props = defineProps({
@@ -64,10 +55,22 @@ onMounted(() => {
     emit('load');
     isFileToLarge.value = true;
   } else {
-    ajax(props.selection.item.path, {
+    ajax(props.selection?.item?.path as string, {
       json: false,
     }).then((data) => {
       content.value = data;
+
+      monaco.editor.create(document.getElementById("container") as HTMLElement, {
+        value: content.value,
+        language: "python",
+        automaticLayout: true,
+        readOnly: true,
+        roundedSelection: true,
+        minimap: {
+          enabled: false,
+        },
+      });
+
       emit('load');
     });
   }
@@ -78,7 +81,7 @@ const editMode = () => {
   contentTemp.value = content.value;
   if (showEdit.value == true) {
     nextTick(() => {
-      editInput.value.focus();
+      editInput.value?.focus();
     });
   }
 };
@@ -91,15 +94,16 @@ const save = () => {
 
   ajax(apiUrl.value, {
     method: 'POST',
-    params: Object.assign(postData, {
+    params: Object.assign(postData as Record<string, string>, {
       q: 'save',
-      adapter: props.selection.adapter,
-      path: props.selection.item.path,
+      adapter: props.selection?.adapter,
+      path: props.selection?.item?.path,
       content: contentTemp.value,
     }),
     json: false,
   })
     .then((data) => {
+
       message.value = t('Updated.');
       content.value = data;
       emit('load');
