@@ -13,9 +13,9 @@
 </template>
 
 <script lang="ts" setup>
-const testUrl = 'uploads/feedback/xxx/';
+const testUrl = 'uploads/feedback/xxx';
 const api = '/api/v1/crash/path';
-const token = 'xxx';
+const token = 'xxx'
 </script>
 
 <style>

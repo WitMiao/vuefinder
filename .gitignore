@@ -1,9 +1,9 @@
-/public
-/node_modules
-/resources
-/vendor
-/storage
-/.idea
+public/
+node_modules/
+resources/
+vendor/
+storage/
+.idea/
 composer.json
 composer.lock
 mix-manifest.json
@@ -12,5 +12,5 @@ mix-manifest.json
 _ide_helper.php
 webpack.mix.js
 package-lock.json
-/dist
+dist/
 .npmrc

@@ -45,6 +45,7 @@
   "dependencies": {
     "cropperjs": "^1.5.13",
     "dragselect": "^2.7.4",
+    "monaco-editor": "^0.52.2",
     "plupload": "^2.3.9",
     "vanilla-lazyload": "^17.8.3",
     "vue": "^3.2.47"
