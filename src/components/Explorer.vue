@@ -272,7 +272,7 @@
             </div>
           </div>
           <!-- <span class="break-all">{{item.basename }}</span> -->
-           <EllipsisMiddle :text="item.basename" class="w-full" style="font-family: monospace !important; justify-items: center;"/>
+           <EllipsisMiddle :text="item.basename" class="w-full" style="justify-items: center;"/>
         </div>
       </div>
     </div>

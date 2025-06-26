@@ -1,10 +1,10 @@
 <template>
   <div ref="textRef" class="flex items-center" v-bind="$attrs">
-    <span ref="ellipsisTextRef" class="inline-block truncate">
+    <span ref="ellipsisTextRef" class="inline-block truncate" style="font-family: monospace !important ">
       {{ text.slice(0, -getSliceNumber(text)) }}
     </span>
     <bdi dir="rtl" class="inline-block overflow-hidden whitespace-nowrap">
-      <bdi dir="ltr" style="margin-left: 4px;">{{ text.slice(-getSliceNumber(text)) }}</bdi>
+      <bdi dir="ltr" style="margin-left: 4px;font-family: monospace !important" >{{ text.slice(-getSliceNumber(text)) }}</bdi>
     </bdi>
   </div>
 </template>
