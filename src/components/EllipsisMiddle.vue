@@ -4,7 +4,7 @@
       {{ text.slice(0, -getSliceNumber(text)) }}
     </span>
     <bdi dir="rtl" class="inline-block overflow-hidden whitespace-nowrap">
-      <bdi dir="ltr" style="margin-left: 2px;">{{ text.slice(-getSliceNumber(text)) }}</bdi>
+      <bdi dir="ltr" style="margin-left: 4px;">{{ text.slice(-getSliceNumber(text)) }}</bdi>
     </bdi>
   </div>
 </template>
