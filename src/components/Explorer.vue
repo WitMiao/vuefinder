@@ -226,7 +226,7 @@
         :data-item="JSON.stringify(item)"
         :data-index="index"
       >
-        <div>
+        <div style="width: 100%;">
           <div class="relative">
             <svg
               v-if="item.type == 'dir'"
@@ -271,7 +271,8 @@
               {{ ext(item.extension) }}
             </div>
           </div>
-          <span class="break-all">{{ title_shorten(item.basename) }}</span>
+          <!-- <span class="break-all">{{item.basename }}</span> -->
+           <EllipsisMiddle :text="item.basename" class="w-full" style="font-family: monospace;"/>
         </div>
       </div>
     </div>
@@ -292,6 +293,7 @@ import { inject, nextTick, onMounted, onUpdated, reactive, ref, watch } from 'vu
 import datetimestring from '../utils/datetimestring.js';
 import { getImageUrl } from '../utils/getImageUrl.js';
 import filesize from './../utils/filesize.js';
+import EllipsisMiddle from './EllipsisMiddle.vue';
 import VFSortIcon from './SortIcon.vue';
 import VFToast from './Toast.vue';
 

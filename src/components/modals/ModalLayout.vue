@@ -16,7 +16,8 @@
         @mousedown.self="emitter.emit('vf-modal-close')"
       >
         <div
-          class="relative bg-white dark:bg-gray-800 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:max-w-4xl md:max-w-2xl w-full"
+          class="relative bg-white dark:bg-gray-800  text-left overflow-hidden shadow-xl transform transition-all w-full"
+          :class="{ 'max-w-100%': fullScreen, 'sm:max-w-4xl md:max-w-2xl sm:my-8 rounded-lg': !fullScreen }"
         >
           <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <slot />
@@ -33,14 +34,20 @@
 </template>
 
 <script setup>
-import { inject, onMounted } from 'vue';
+import { inject, onMounted, ref } from 'vue';
 
 const emitter = inject('emitter');
-
+const { setStore, getStore } = inject('storage');
+const fullScreen = ref(getStore('full-text-screen', false));
 onMounted(() => {
   const inputElements = document.querySelector('.v-f-modal input');
   if (inputElements) {
     inputElements.focus();
   }
+});
+emitter.on('vf-fullscreen-text-toggle', () => {
+  debugger
+  fullScreen.value = !fullScreen.value;
+  setStore('full-text-screen', fullScreen.value);
 });
 </script>
