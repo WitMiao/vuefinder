@@ -46,7 +46,6 @@ onMounted(() => {
   }
 });
 emitter.on('vf-fullscreen-text-toggle', () => {
-  debugger
   fullScreen.value = !fullScreen.value;
   setStore('full-text-screen', fullScreen.value);
 });
