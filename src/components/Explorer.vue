@@ -271,8 +271,7 @@
               {{ ext(item.extension) }}
             </div>
           </div>
-          <!-- <span class="break-all">{{item.basename }}</span> -->
-           <EllipsisMiddle :text="item.basename" class="w-full" style="justify-items: center;"/>
+           <span class="break-all">{{ title_shorten(item.basename) }}</span>
         </div>
       </div>
     </div>
@@ -293,7 +292,6 @@ import { inject, nextTick, onMounted, onUpdated, reactive, ref, watch } from 'vu
 import datetimestring from '../utils/datetimestring.js';
 import { getImageUrl } from '../utils/getImageUrl.js';
 import filesize from './../utils/filesize.js';
-import EllipsisMiddle from './EllipsisMiddle.vue';
 import VFSortIcon from './SortIcon.vue';
 import VFToast from './Toast.vue';
 
@@ -307,7 +305,7 @@ const emitter = inject('emitter');
 const { setStore, getStore } = inject('storage');
 const adapter = inject('adapter');
 const ext = (item) => item?.substring(0, 3);
-const title_shorten = (title) => title.replace(/((?=([\w\W]{0,14}))([\w\W]{8,})([\w\W]{8,}))/, '$2..$4');
+const title_shorten = (title) => title.length >21 ? title.replace(/((?=([\w\W]{0,14}))([\w\W]{8,})([\w\W]{8,}))/, '$2..$4') : title
 const selectorArea = ref(null);
 const dragImage = ref(null);
 const selectedCount = ref(0);
