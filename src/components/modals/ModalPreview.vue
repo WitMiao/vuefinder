@@ -51,7 +51,7 @@
     <template v-slot:buttons>
       <button
         type="button"
-        @click="emitter.emit('vf-modal-close')"
+        @click=" close "
         class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-gray-400 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
       >
         {{ t('Close') }}
@@ -89,7 +89,7 @@ const { apiUrl } = useApiUrl();
 const emitter = inject('emitter');
 const { t } = inject('i18n');
 const loaded = ref(false);
-
+const { setStore, getStore } = inject('storage');
 const setLoad = (bool) => (loaded.value = bool);
 
 const props = defineProps({
@@ -99,5 +99,9 @@ const loadPreview = (type) => (props.selection.item.mime_type ?? '').startsWith(
 
 const download = () => {
   emitter.emit('vf-download', props.selection.item.path);
+};
+const close = () => {
+  emitter.emit('vf-modal-close');
+  setStore('full-text-screen', false);
 };
 </script>

@@ -38,7 +38,7 @@ import { inject, onMounted, ref } from 'vue';
 
 const emitter = inject('emitter');
 const { setStore, getStore } = inject('storage');
-const fullScreen = ref(getStore('full-text-screen', false));
+const fullScreen = ref(false);
 onMounted(() => {
   const inputElements = document.querySelector('.v-f-modal input');
   if (inputElements) {
@@ -47,6 +47,5 @@ onMounted(() => {
 });
 emitter.on('vf-fullscreen-text-toggle', () => {
   fullScreen.value = !fullScreen.value;
-  setStore('full-text-screen', fullScreen.value);
 });
 </script>

@@ -7,11 +7,12 @@
     <div class="ml-auto mb-2">
      <div
         class="mx-1.5"
-        :aria-label="t('Toggle Full Screen')"
+        :aria-label="fullScreen ? '收起': '展开'"
         data-microtip-position="bottom-left"
         role="tooltip"
         @click="setFullScreen"
       >
+
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="h-6 w-6 md:h-6 md:w-6 m-auto cursor-pointer stroke-gray-500 hover:stroke-cyan-700 dark:stroke-gray-400 dark:hover:stroke-gray-300"
@@ -75,7 +76,7 @@ const message = ref('');
 const isError = ref(false);
 const isFileToLarge = ref(false);
 const { t } = inject('i18n');
-const fullScreen = ref(getStore('full-text-screen', false));
+const fullScreen = ref(false);
 const emitter = inject('emitter') as VueEvents;
 onMounted(() => {
   if (props.selection?.item?.file_size > 1024 * 1024 * 50) {

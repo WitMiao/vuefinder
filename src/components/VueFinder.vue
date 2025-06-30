@@ -274,7 +274,6 @@ emitter.on('vf-fetch', ({ params, onSuccess = null, onError = null }) => {
 
 emitter.on('vf-download', (path) => {
   downloadByUrl({ url: path });
-  emitter.emit('vf-modal-close');
 });
 
 onMounted(() => {
