@@ -14,7 +14,7 @@ Example showing how to open VueFinder in a popup window and return selected file
 
 ## How It Works
 
-1. Parent page opens a dedicated popup route (`/examples/window-picker`) with VueFinder only.
+1. Parent page opens a dedicated popup page (`/examples/window-picker.html`) with VueFinder only.
 2. User selects files in popup.
 3. Popup sends selected files back using `window.opener.postMessage(...)`.
 4. Parent receives and displays selected files.
@@ -23,7 +23,7 @@ Example showing how to open VueFinder in a popup window and return selected file
 
 ```ts
 // Parent
-window.open('/examples/window-picker', 'vuefinder-popup', 'width=900,height=600');
+window.open('/examples/window-picker.html', 'vuefinder-popup', 'width=900,height=600');
 
 window.addEventListener('message', (event) => {
   if (event.data?.type === 'window-demo-files-selected') {
@@ -43,4 +43,5 @@ window.opener?.postMessage(
 - Popup opening requires a user action (button click) in most browsers.
 - The popup window is a dedicated picker page that displays only VueFinder.
 - This pattern is useful for picker flows where you want to keep parent UI context intact.
+- If your server supports clean URL rewrites, you can also use `/examples/window-picker`.
 - In production, validate `event.origin` before trusting `postMessage` payloads.
