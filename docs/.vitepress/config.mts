@@ -295,6 +295,7 @@ gtag('config', 'G-6BYQESCJ6R');`
             { text: 'Selection Filters', link: '/examples/selection-filters' },
             { text: 'Custom Double-Click', link: '/examples/custom-double-click' },
             { text: 'External Selection', link: '/examples/external-selection' },
+            { text: 'Window Example', link: '/examples/window-example' },
             { text: 'Status Bar Select', link: '/examples/status-bar-select' },
             { text: 'Events', link: '/examples/events-demo' },
             { text: 'Notifications', link: '/examples/notifications' },
