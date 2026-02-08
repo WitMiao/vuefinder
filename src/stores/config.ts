@@ -22,6 +22,8 @@ export interface PersistenceConfigState {
   path: string;
   pinnedFolders: DirEntry[];
   notificationsEnabled: boolean;
+  expandTreeByDefault: boolean;
+  expandedTreePaths: string[];
 }
 
 /**
@@ -90,6 +92,8 @@ const DEFAULT_PERSISTENCE_STATE: PersistenceConfigState = {
   path: '',
   pinnedFolders: [] as DirEntry[],
   notificationsEnabled: true,
+  expandTreeByDefault: false,
+  expandedTreePaths: [] as string[],
 };
 
 const DEFAULT_NON_PERSISTENCE_STATE: NonPersistenceConfigState = {

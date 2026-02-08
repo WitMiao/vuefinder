@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useApp } from '../composables/useApp';
 import { useStore } from '@nanostores/vue';
 
@@ -9,13 +9,27 @@ import TreeSubfolderList from './TreeSubfolderList.vue';
 import { useDragNDrop } from '../composables/useDragNDrop';
 import type { StoreValue } from 'nanostores';
 import type { CurrentPathState } from '../stores/files';
+import type { ConfigState } from '../stores/config';
 
 const app = useApp();
 const fs = app.fs;
-const showSubFolders = ref(false);
+const config = app.config;
 const props = defineProps<{
   storage: string;
 }>();
+const configState: StoreValue<ConfigState> = useStore(config.state);
+
+const hasExpandedPathInStorage = computed(() => {
+  const expandedPaths = configState.value.expandedTreePaths || [];
+  const storagePrefix = `${props.storage}://`;
+  return expandedPaths.some(
+    (path: string) => path === storagePrefix || path.startsWith(`${storagePrefix}`)
+  );
+});
+
+const showSubFolders = ref(
+  configState.value.expandTreeByDefault || hasExpandedPathInStorage.value
+);
 
 const dragNDrop = useDragNDrop(app, ['vuefinder__drag-over']);
 
@@ -26,6 +40,18 @@ const currentPath: StoreValue<CurrentPathState> = useStore(fs.path);
 const isActive = computed(() => {
   return props.storage === currentPath.value?.storage;
 });
+
+watch(
+  () => ({
+    expandTreeByDefault: configState.value.expandTreeByDefault,
+    hasExpandedPathInStorage: hasExpandedPathInStorage.value,
+  }),
+  (value) => {
+    if (value.expandTreeByDefault || value.hasExpandedPathInStorage) {
+      showSubFolders.value = true;
+    }
+  }
+);
 
 const item = {
   storage: props.storage,

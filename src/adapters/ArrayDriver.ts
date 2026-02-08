@@ -260,7 +260,7 @@ export class ArrayDriver extends BaseAdapter {
     }
 
     const op = this.resultForDir(this.normalizePath(params.path));
-    return { ...op, deleted } as unknown as DeleteResult;
+    return { ...op, deleted };
   }
 
   async rename(params: RenameParams): Promise<FileOperationResult> {

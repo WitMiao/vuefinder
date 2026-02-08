@@ -126,7 +126,11 @@ Delete one or more files or folders from the specified path.
     - `type: string` - Item type: `'file'` or `'dir'`
 
 **Returns:** `Promise<DeleteResult>` - Promise resolving to deletion result:
-  - `deleted: DirEntry[]` - Array of successfully deleted items (as DirEntry objects)
+  - `files: DirEntry[]` - Updated file list for the current directory after delete
+  - `storages: string[]` - Available storage identifiers
+  - `read_only: boolean` - Whether the current path is read-only
+  - `dirname: string` - Current directory name/path
+  - `deleted?: DirEntry[]` - Optional array of deleted items (if provided by the driver/backend)
 
 **Usage Example:**
 
@@ -138,13 +142,14 @@ const result = await driver.delete({
     { path: 'local://documents/old-folder', type: 'dir' }
   ]
 });
-console.log(`Deleted ${result.deleted.length} items`);
+console.log(result.files); // refreshed current folder listing
+console.log(result.deleted ?? []); // optional deleted items list
 ```
 
 **Error Handling:**
 
 - Throws error if items cannot be deleted (permissions, locked files, etc.)
-- May partially succeed - check `result.deleted` to see which items were actually deleted
+- May partially succeed - if available, check `result.deleted` to see which items were deleted
 
 ---
 

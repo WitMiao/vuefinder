@@ -47,8 +47,8 @@ export interface RemoteDriverConfig {
 /**
  * Response from delete operations
  */
-export interface DeleteResult {
-  deleted: DirEntry[];
+export interface DeleteResult extends FileOperationResult {
+  deleted?: DirEntry[];
 }
 
 /**

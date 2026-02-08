@@ -95,6 +95,21 @@ const handleSelect = (items: DirEntry[]) => {
 };
 ```
 
+### `DeleteResult`
+
+Delete operation result shape used by drivers.
+
+```ts
+export interface DeleteResult extends FileOperationResult {
+  deleted?: DirEntry[];
+}
+```
+
+**Notes:**
+
+- Includes the same refreshed directory payload as `FileOperationResult` (`files`, `storages`, `read_only`, `dirname`).
+- `deleted` is optional and may be provided by drivers/backends that return deleted item details.
+
 ### `ItemDclickEvent`
 
 Event object passed to `@file-dclick` and `@folder-dclick` handlers.

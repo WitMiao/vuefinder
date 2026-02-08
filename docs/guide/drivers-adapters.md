@@ -202,7 +202,13 @@ class MyCustomDriver extends BaseAdapter implements Driver {
 
   async delete(params: DeleteParams): Promise<DeleteResult> {
     // Your implementation
-    return { deleted: [] };
+    return {
+      files: [],
+      storages: ['custom'],
+      read_only: false,
+      dirname: params.path,
+      deleted: [],
+    };
   }
 
   async rename(params: RenameParams): Promise<FileOperationResult> {
