@@ -10,6 +10,7 @@ export type { FsData };
 export interface IndexedDBDriverConfig {
   dbName?: string;
   storage?: string;
+  storages?: string[];
   readOnly?: boolean;
   version?: number;
 }

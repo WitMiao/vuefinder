@@ -16,6 +16,7 @@ import type { DirEntry, FsData } from '../types';
 export interface IndexedDBDriverConfig {
   dbName?: string; // defaults to 'vuefinder'
   storage?: string; // defaults to 'indexeddb'
+  storages?: string[]; // multi-storage support
   readOnly?: boolean;
   version?: number; // defaults to 1
 }
@@ -26,7 +27,9 @@ type ContentRecord = { path: string; content: string | ArrayBuffer };
 // ArrayDriver owns all file behavior and this class only persists state.
 export class IndexedDBDriver extends BaseAdapter {
   private dbName: string;
-  private storage: string;
+  private defaultStorage: string;
+  private storages: string[];
+  private storagesSet: Set<string>;
   private readOnly: boolean;
   private version: number;
   private db: IDBDatabase | null = null;
@@ -40,19 +43,42 @@ export class IndexedDBDriver extends BaseAdapter {
   constructor(config: IndexedDBDriverConfig = {}) {
     super();
     this.dbName = config.dbName || 'vuefinder';
-    this.storage = config.storage || 'indexeddb';
+
+    const configuredStorages =
+      config.storages && config.storages.length > 0
+        ? config.storages
+        : [config.storage || 'indexeddb'];
+
+    this.storages = [...new Set(configuredStorages)];
+    this.defaultStorage = config.storage || this.storages[0] || 'indexeddb';
+    if (!this.storages.includes(this.defaultStorage)) {
+      this.storages.unshift(this.defaultStorage);
+    }
+    this.storagesSet = new Set(this.storages);
+
     this.readOnly = Boolean(config.readOnly);
     this.version = config.version || 1;
 
     this.driver = new ArrayDriver({
       files: this.entries,
-      storage: this.storage,
+      storage: this.defaultStorage,
+      storages: this.storages,
       readOnly: this.readOnly,
       contentStore: this.contentStore,
     });
 
     // Start loading immediately so uploader callbacks do not race with initial state load.
     this.readyPromise = this.loadSnapshotFromDB();
+  }
+
+  private isManagedStorage(storage?: string): boolean {
+    return Boolean(storage && this.storagesSet.has(storage));
+  }
+
+  private isManagedPath(path?: string): boolean {
+    if (!path) return false;
+    const { storage } = this.parsePath(path);
+    return this.isManagedStorage(storage);
   }
 
   private async initDB(): Promise<IDBDatabase> {
@@ -110,28 +136,21 @@ export class IndexedDBDriver extends BaseAdapter {
     const tx = db.transaction(['files', 'content'], 'readonly');
 
     const filesStore = tx.objectStore('files');
-    const contentStore = tx.objectStore('content');
-
-    let filesRequest: IDBRequest<DirEntry[]>;
-    if (filesStore.indexNames.contains('storage')) {
-      filesRequest = filesStore.index('storage').getAll(this.storage) as IDBRequest<DirEntry[]>;
-    } else {
-      filesRequest = filesStore.getAll() as IDBRequest<DirEntry[]>;
-    }
+    const contentObjectStore = tx.objectStore('content');
 
     const [files, contentRows] = await Promise.all([
-      this.requestToPromise(filesRequest),
-      this.requestToPromise(contentStore.getAll() as IDBRequest<ContentRecord[]>),
+      this.requestToPromise(filesStore.getAll() as IDBRequest<DirEntry[]>),
+      this.requestToPromise(contentObjectStore.getAll() as IDBRequest<ContentRecord[]>),
     ]);
 
     await this.waitTransaction(tx);
 
     this.entries.length = 0;
-    this.entries.push(...files.filter((entry) => entry.storage === this.storage));
+    this.entries.push(...files.filter((entry) => this.isManagedStorage(entry.storage)));
 
     this.contentStore.clear();
     for (const row of contentRows) {
-      if (!row?.path || !row.path.startsWith(`${this.storage}://`)) continue;
+      if (!this.isManagedPath(row?.path)) continue;
       this.contentStore.set(row.path, row.content);
     }
   }
@@ -142,19 +161,43 @@ export class IndexedDBDriver extends BaseAdapter {
     const db = await this.getDB();
     const tx = db.transaction(['files', 'content'], 'readwrite');
     const filesStore = tx.objectStore('files');
-    const contentStore = tx.objectStore('content');
+    const contentObjectStore = tx.objectStore('content');
+
+    const existingFilesPromise = this.requestToPromise(filesStore.getAll() as IDBRequest<DirEntry[]>);
+    const existingContentPromise = this.requestToPromise(
+      contentObjectStore.getAll() as IDBRequest<ContentRecord[]>
+    );
+
+    const [existingFiles, existingContent] = await Promise.all([
+      existingFilesPromise,
+      existingContentPromise,
+    ]);
 
     filesStore.clear();
-    contentStore.clear();
+    contentObjectStore.clear();
+
+    for (const entry of existingFiles) {
+      if (!this.isManagedStorage(entry.storage)) {
+        filesStore.put(entry);
+      }
+    }
+
+    for (const row of existingContent) {
+      if (!this.isManagedPath(row.path)) {
+        contentObjectStore.put(row);
+      }
+    }
 
     for (const entry of this.entries) {
-      if (entry.storage !== this.storage) continue;
-      filesStore.put(entry);
+      if (this.isManagedStorage(entry.storage)) {
+        filesStore.put(entry);
+      }
     }
 
     for (const [path, content] of this.contentStore.entries()) {
-      if (!path.startsWith(`${this.storage}://`)) continue;
-      contentStore.put({ path, content });
+      if (this.isManagedPath(path)) {
+        contentObjectStore.put({ path, content });
+      }
     }
 
     await this.waitTransaction(tx);

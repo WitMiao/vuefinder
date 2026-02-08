@@ -16,6 +16,7 @@ type FilesSource = { value: DirEntry[] } | DirEntry[];
 export interface ArrayDriverConfig {
   files: FilesSource;
   storage?: string; // defaults to 'memory'
+  storages?: string[]; // multi-storage support
   readOnly?: boolean;
   contentStore?: Map<string, string | ArrayBuffer>;
 }
@@ -24,14 +25,28 @@ export interface ArrayDriverConfig {
 // where pathPart is '' for root or 'a/b/c' without leading slash.
 export class ArrayDriver extends BaseAdapter {
   private filesSource: FilesSource;
-  private storage: string;
+  private defaultStorage: string;
+  private storages: string[];
+  private storagesSet: Set<string>;
   private readOnly: boolean;
   private contentStore: Map<string, string | ArrayBuffer>;
 
   constructor(config: ArrayDriverConfig) {
     super();
     this.filesSource = config.files;
-    this.storage = config.storage || 'memory';
+
+    const configuredStorages =
+      config.storages && config.storages.length > 0
+        ? config.storages
+        : [config.storage || 'memory'];
+
+    this.storages = [...new Set(configuredStorages)];
+    this.defaultStorage = config.storage || this.storages[0] || 'memory';
+    if (!this.storages.includes(this.defaultStorage)) {
+      this.storages.unshift(this.defaultStorage);
+    }
+    this.storagesSet = new Set(this.storages);
+
     this.readOnly = Boolean(config.readOnly);
     this.contentStore = config.contentStore || new Map();
   }
@@ -55,38 +70,46 @@ export class ArrayDriver extends BaseAdapter {
     }
   }
 
-  private combine(pathPart?: string): string {
+  private ensureStorageSupported(storage: string): void {
+    if (!this.storagesSet.has(storage)) {
+      throw new Error(`Unsupported storage: ${storage}`);
+    }
+  }
+
+  private combine(pathPart?: string, storage = this.defaultStorage): string {
+    this.ensureStorageSupported(storage);
     const part = pathPart ?? '';
-    if (part === '') return `${this.storage}://`;
-    return `${this.storage}://${part}`;
+    if (part === '') return `${storage}://`;
+    return `${storage}://${part}`;
   }
 
   private split(full: string): { storage?: string; path?: string } {
     return this.parsePath(full);
   }
 
-  private normalizePath(full?: string): string {
+  private normalizePath(full?: string, fallbackStorage = this.defaultStorage): string {
     const { storage, path } = this.split(full || '');
-    if (storage && storage !== this.storage) {
-      throw new Error(`Unsupported storage: ${storage}`);
-    }
-    return this.combine(path ?? '');
+    const resolvedStorage = storage || fallbackStorage;
+    return this.combine(path ?? '', resolvedStorage);
   }
 
   private parent(full: string): string {
-    const { path } = this.split(full);
-    if (!path) return this.combine('');
+    const { storage, path } = this.split(full);
+    const resolvedStorage = storage || this.defaultStorage;
+    if (!path) return this.combine('', resolvedStorage);
+
     const trimmed = path.replace(/\/+$/g, '').replace(/^\/+/, '');
     const idx = trimmed.lastIndexOf('/');
-    if (idx <= 0) return this.combine('');
-    return this.combine(trimmed.slice(0, idx));
+    if (idx <= 0) return this.combine('', resolvedStorage);
+    return this.combine(trimmed.slice(0, idx), resolvedStorage);
   }
 
   private join(dirFull: string, name: string): string {
-    const { path } = this.split(dirFull);
+    const { storage, path } = this.split(dirFull);
+    const resolvedStorage = storage || this.defaultStorage;
     const dirPart = (path ?? '').replace(/\/$/, '');
     const joined = dirPart ? `${dirPart}/${name}` : name;
-    return this.combine(joined);
+    return this.combine(joined, resolvedStorage);
   }
 
   private getExtension(name: string): string {
@@ -99,11 +122,11 @@ export class ArrayDriver extends BaseAdapter {
   }
 
   private findByPath(full: string): DirEntry | undefined {
-    return this.files.find((e) => e.storage === this.storage && e.path === full);
+    return this.files.find((e) => e.path === full);
   }
 
   private listChildren(dirnameFull: string): DirEntry[] {
-    return this.files.filter((e) => e.storage === this.storage && e.dir === dirnameFull);
+    return this.files.filter((e) => e.dir === dirnameFull);
   }
 
   private replaceAll(next: DirEntry[]): void {
@@ -112,14 +135,14 @@ export class ArrayDriver extends BaseAdapter {
 
   private upsert(entry: DirEntry): void {
     const next = this.files.slice();
-    const idx = next.findIndex((e) => e.storage === this.storage && e.path === entry.path);
+    const idx = next.findIndex((e) => e.path === entry.path);
     if (idx === -1) next.push(entry);
     else next[idx] = entry;
     this.replaceAll(next);
   }
 
   private removeExact(full: string): void {
-    const next = this.files.filter((e) => !(e.storage === this.storage && e.path === full));
+    const next = this.files.filter((e) => e.path !== full);
     this.replaceAll(next);
   }
 
@@ -127,10 +150,6 @@ export class ArrayDriver extends BaseAdapter {
     const deleted: DirEntry[] = [];
     const keep: DirEntry[] = [];
     for (const e of this.files) {
-      if (e.storage !== this.storage) {
-        keep.push(e);
-        continue;
-      }
       if (this.isInTree(e.path, rootFull)) {
         deleted.push(e);
       } else {
@@ -149,9 +168,7 @@ export class ArrayDriver extends BaseAdapter {
   }
 
   private getTree(root: string, source: DirEntry[] = this.files): DirEntry[] {
-    return source
-      .filter((e) => e.storage === this.storage && this.isInTree(e.path, root))
-      .sort((a, b) => a.path.length - b.path.length);
+    return source.filter((e) => this.isInTree(e.path, root)).sort((a, b) => a.path.length - b.path.length);
   }
 
   private uniqueName(dirFull: string, base: string, taken: Set<string>): string {
@@ -168,9 +185,9 @@ export class ArrayDriver extends BaseAdapter {
     }
   }
 
-  private topLevelSources(rawSources: string[]): string[] {
+  private topLevelSources(rawSources: string[], fallbackStorage = this.defaultStorage): string[] {
     const unique = [...new Set(rawSources)]
-      .map((p) => this.normalizePath(p))
+      .map((p) => this.normalizePath(p, fallbackStorage))
       .filter((p) => this.findByPath(p))
       .sort((a, b) => a.length - b.length);
 
@@ -184,8 +201,9 @@ export class ArrayDriver extends BaseAdapter {
 
   private makeDirEntry(dirFull: string, name: string): DirEntry {
     const full = this.join(dirFull, name);
+    const { storage } = this.split(full);
     return {
-      storage: this.storage,
+      storage: storage || this.defaultStorage,
       dir: dirFull,
       basename: name,
       extension: '',
@@ -205,8 +223,9 @@ export class ArrayDriver extends BaseAdapter {
     mime: string | null = null
   ): DirEntry {
     const full = this.join(dirFull, name);
+    const { storage } = this.split(full);
     return {
-      storage: this.storage,
+      storage: storage || this.defaultStorage,
       dir: dirFull,
       basename: name,
       extension: this.getExtension(name),
@@ -222,7 +241,7 @@ export class ArrayDriver extends BaseAdapter {
   private resultForDir(dirnameFull: string): FileOperationResult {
     return {
       files: this.listChildren(dirnameFull),
-      storages: [this.storage],
+      storages: this.storages,
       read_only: this.readOnly,
       dirname: dirnameFull,
     } as unknown as FileOperationResult;
@@ -230,9 +249,8 @@ export class ArrayDriver extends BaseAdapter {
 
   async list(params?: { path?: string }): Promise<FsData> {
     const dirnameFull = this.normalizePath(params?.path);
-    const { storage } = this.split(dirnameFull);
     return {
-      storages: [storage || ''],
+      storages: this.storages,
       dirname: dirnameFull,
       files: this.listChildren(dirnameFull),
       read_only: this.readOnly,
@@ -244,9 +262,12 @@ export class ArrayDriver extends BaseAdapter {
     this.validateParam(params.items, 'items');
     this.validateParam(params.path, 'path');
 
+    const currentDir = this.normalizePath(params.path);
+    const { storage: currentStorage } = this.split(currentDir);
+
     const deleted: DirEntry[] = [];
     for (const it of params.items) {
-      const itemPath = this.normalizePath(it.path);
+      const itemPath = this.normalizePath(it.path, currentStorage || this.defaultStorage);
       const entry = this.findByPath(itemPath);
       if (!entry) continue;
 
@@ -259,7 +280,7 @@ export class ArrayDriver extends BaseAdapter {
       }
     }
 
-    const op = this.resultForDir(this.normalizePath(params.path));
+    const op = this.resultForDir(currentDir);
     return { ...op, deleted };
   }
 
@@ -267,7 +288,10 @@ export class ArrayDriver extends BaseAdapter {
     this.ensureWritable();
     this.validateParam(params.name, 'name');
 
-    const targetPath = this.normalizePath(params.item || params.path);
+    const contextDir = this.normalizePath(params.path);
+    const { storage: contextStorage } = this.split(contextDir);
+    const targetPath = this.normalizePath(params.item || params.path, contextStorage || this.defaultStorage);
+
     const entry = this.findByPath(targetPath);
     if (!entry) throw new Error('Item not found');
 
@@ -281,7 +305,7 @@ export class ArrayDriver extends BaseAdapter {
       const oldPrefix = entry.path;
       const newPrefix = newFull;
       const next = this.files.map((e) => {
-        if (e.storage !== this.storage || !this.isInTree(e.path, oldPrefix)) return e;
+        if (e.storage !== entry.storage || !this.isInTree(e.path, oldPrefix)) return e;
         const replacedPath = newPrefix + e.path.slice(oldPrefix.length);
         return this.cloneEntry(e, {
           path: replacedPath,
@@ -315,7 +339,9 @@ export class ArrayDriver extends BaseAdapter {
       }
     }
 
-    const parentParam = params.path ? this.normalizePath(params.path) : parentFull;
+    const parentParam = params.path
+      ? this.normalizePath(params.path, entry.storage || this.defaultStorage)
+      : parentFull;
     return this.resultForDir(parentParam || parentFull);
   }
 
@@ -324,9 +350,13 @@ export class ArrayDriver extends BaseAdapter {
     this.validateParam(params.sources, 'sources');
     this.validateParam(params.destination, 'destination');
 
-    const destination = this.normalizePath(params.destination);
-    const sources = this.topLevelSources(params.sources);
-    const taken = new Set(this.files.filter((e) => e.storage === this.storage).map((e) => e.path));
+    const destination = this.normalizePath(
+      params.destination,
+      params.path ? this.split(this.normalizePath(params.path)).storage || this.defaultStorage : this.defaultStorage
+    );
+    const { storage: destinationStorage } = this.split(destination);
+    const sources = this.topLevelSources(params.sources, destinationStorage || this.defaultStorage);
+    const taken = new Set(this.files.map((e) => e.path));
     const additions: DirEntry[] = [];
 
     for (const sourcePath of sources) {
@@ -385,12 +415,16 @@ export class ArrayDriver extends BaseAdapter {
     this.validateParam(params.sources, 'sources');
     this.validateParam(params.destination, 'destination');
 
-    const destination = this.normalizePath(params.destination);
-    const sources = this.topLevelSources(params.sources);
+    const destination = this.normalizePath(
+      params.destination,
+      params.path ? this.split(this.normalizePath(params.path)).storage || this.defaultStorage : this.defaultStorage
+    );
+    const { storage: destinationStorage } = this.split(destination);
+    const sources = this.topLevelSources(params.sources, destinationStorage || this.defaultStorage);
     let next = this.files.slice();
 
     for (const sourcePath of sources) {
-      const source = next.find((e) => e.storage === this.storage && e.path === sourcePath);
+      const source = next.find((e) => e.path === sourcePath);
       if (!source) continue;
 
       if (source.type === 'dir' && this.isInTree(destination, source.path)) {
@@ -403,11 +437,7 @@ export class ArrayDriver extends BaseAdapter {
 
       const tree = this.getTree(source.path, next);
       const movingPaths = new Set(tree.map((e) => e.path));
-      const occupied = new Set(
-        next
-          .filter((e) => e.storage === this.storage && !movingPaths.has(e.path))
-          .map((e) => e.path)
-      );
+      const occupied = new Set(next.filter((e) => !movingPaths.has(e.path)).map((e) => e.path));
 
       const rootName = this.uniqueName(destination, source.basename, occupied);
       const pathMap = new Map<string, string>();
@@ -436,10 +466,7 @@ export class ArrayDriver extends BaseAdapter {
         );
       }
 
-      next = next.map((entry) => {
-        if (entry.storage !== this.storage) return entry;
-        return updates.get(entry.path) || entry;
-      });
+      next = next.map((entry) => updates.get(entry.path) || entry);
 
       for (const [oldPath, newPath] of pathMap.entries()) {
         if (oldPath === newPath) continue;
@@ -546,7 +573,6 @@ export class ArrayDriver extends BaseAdapter {
     const base = params.path ? this.normalizePath(params.path) : undefined;
 
     return this.files.filter((e) => {
-      if (e.storage !== this.storage) return false;
       if (base) {
         if (params.deep) {
           if (!this.isInTree(e.path, base)) return false;
