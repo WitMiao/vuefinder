@@ -297,6 +297,8 @@ gtag('config', 'G-6BYQESCJ6R');`
             { text: 'External Selection', link: '/examples/external-selection' },
             { text: 'Status Bar Select', link: '/examples/status-bar-select' },
             { text: 'Events', link: '/examples/events-demo' },
+            { text: 'Notifications', link: '/examples/notifications' },
+            { text: 'Composable API', link: '/examples/composable-api' },
             { text: 'Context Menu', link: '/examples/context-menu' },
             { text: 'Memory Driver', link: '/examples/memory-driver' },
             { text: 'Large Dataset', link: '/examples/large-dataset' },
