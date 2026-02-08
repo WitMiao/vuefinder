@@ -36,7 +36,11 @@ function shouldShowToast(source?: NotifierSource): boolean {
   }
 }
 
-export function notify(source: NotifierSource | undefined, type: NotifyType, message: string): void {
+export function notify(
+  source: NotifierSource | undefined,
+  type: NotifyType,
+  message: string
+): void {
   const payload: NotifyPayload = { type, message };
   source?.emitter?.emit?.('vf-notify', payload);
 

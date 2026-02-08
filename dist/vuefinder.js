@@ -1,4 +1,4 @@
-import { inject as ht, reactive as yt, watch as ie, ref as A, computed as R, shallowRef as pn, markRaw as qn, defineComponent as te, onMounted as fe, nextTick as Be, createElementBlock as h, openBlock as u, withKeys as vt, unref as a, createElementVNode as s, createCommentVNode as L, withModifiers as ae, renderSlot as xe, toDisplayString as y, createBlock as U, resolveDynamicComponent as _n, withCtx as se, createVNode as N, Fragment as ve, renderList as pe, withDirectives as ue, vModelCheckbox as Ze, vModelText as We, onUnmounted as ke, useTemplateRef as Je, createTextVNode as ce, resolveComponent as hn, normalizeClass as ne, customRef as Gn, Teleport as bt, normalizeStyle as Oe, isRef as Wn, vModelSelect as mt, onBeforeUnmount as mn, vModelRadio as Dt, mergeProps as Ae, toHandlers as He, vShow as Ue, normalizeProps as Ke, guardReactiveProps as je, onUpdated as Yn, mergeModels as Qn, useModel as gn, Transition as Xn, provide as Jn } from "vue";
+import { inject as ht, reactive as yt, watch as ie, ref as A, computed as R, shallowRef as pn, markRaw as qn, defineComponent as te, onMounted as fe, nextTick as Be, openBlock as u, createElementBlock as h, withKeys as vt, unref as a, createElementVNode as s, withModifiers as ae, renderSlot as xe, createCommentVNode as L, toDisplayString as y, createBlock as U, resolveDynamicComponent as _n, withCtx as se, createVNode as N, Fragment as ve, renderList as pe, withDirectives as ue, vModelCheckbox as Ze, vModelText as We, onUnmounted as ke, useTemplateRef as Je, createTextVNode as ce, resolveComponent as hn, normalizeClass as ne, customRef as Gn, Teleport as bt, normalizeStyle as Oe, isRef as Wn, vModelSelect as mt, onBeforeUnmount as mn, vModelRadio as Dt, mergeProps as Ae, toHandlers as He, vShow as Ue, normalizeProps as Ke, guardReactiveProps as je, onUpdated as Yn, useModel as gn, mergeModels as Qn, Transition as Xn, provide as Jn } from "vue";
 import Zn from "mitt";
 import { useStore as W } from "@nanostores/vue";
 import { persistentAtom as wn } from "@nanostores/persistent";
@@ -197,7 +197,7 @@ function fo(n, e, t, o, i) {
   });
   return yt({ t: $, locale: _, localeAtom: c });
 }
-const po = "4.0.33";
+const po = "4.1.0";
 function Bt(n, e, t, o, i) {
   return e = Math, t = e.log, o = 1024, i = t(n) / t(o) | 0, (n / e.pow(o, i)).toFixed(0) + " " + (i ? "KMGTPEZY"[--i] + "iB" : "B");
 }
@@ -725,7 +725,10 @@ class ko extends Vt {
   }
   async rename(e) {
     this.ensureWritable(), this.validateParam(e.name, "name");
-    const t = this.normalizePath(e.path), { storage: o } = this.split(t), i = this.normalizePath(e.item || e.path, o || this.defaultStorage), l = this.findByPath(i);
+    const t = this.normalizePath(e.path), { storage: o } = this.split(t), i = this.normalizePath(
+      e.item || e.path,
+      o || this.defaultStorage
+    ), l = this.findByPath(i);
     if (!l) throw new Error("Item not found");
     const r = l.dir, d = this.join(r, e.name);
     if (d !== l.path && this.findByPath(d))
@@ -768,7 +771,12 @@ class ko extends Vt {
       const c = this.findByPath(d);
       if (!c) continue;
       if (c.type === "file") {
-        const p = this.uniqueName(t, c.basename, l), S = this.makeFileEntry(t, p, c.file_size || 0, c.mime_type);
+        const p = this.uniqueName(t, c.basename, l), S = this.makeFileEntry(
+          t,
+          p,
+          c.file_size || 0,
+          c.mime_type
+        );
         r.push(S), l.add(S.path);
         const F = this.contentStore.get(c.path);
         F !== void 0 && this.contentStore.set(S.path, F);
@@ -896,7 +904,9 @@ class ko extends Vt {
     const t = this.normalizePath(e.path), o = this.findByPath(t);
     if (!o) throw new Error("File not found");
     if (o.type !== "file") throw new Error("Can only save file content");
-    return this.contentStore.set(t, e.content), this.upsert(this.cloneEntry(o, { file_size: e.content.length, last_modified: Date.now() })), t;
+    return this.contentStore.set(t, e.content), this.upsert(
+      this.cloneEntry(o, { file_size: e.content.length, last_modified: Date.now() })
+    ), t;
   }
   configureUploader(e, t) {
     e && e.on("upload-success", async (o) => {
@@ -1191,7 +1201,9 @@ class pf extends Vt {
   }
   async persistSnapshot() {
     if (this.readOnly) return;
-    const t = (await this.getDB()).transaction(["files", "content"], "readwrite"), o = t.objectStore("files"), i = t.objectStore("content"), l = this.requestToPromise(o.getAll()), r = this.requestToPromise(
+    const t = (await this.getDB()).transaction(["files", "content"], "readwrite"), o = t.objectStore("files"), i = t.objectStore("content"), l = this.requestToPromise(
+      o.getAll()
+    ), r = this.requestToPromise(
       i.getAll()
     ), [d, c] = await Promise.all([
       l,
@@ -7974,9 +7986,7 @@ const wv = { class: "vuefinder__folder-loader-indicator" }, yv = {
       return S.some(
         (C) => C === F || C.startsWith(`${F}`)
       );
-    }), d = A(
-      l.value.expandTreeByDefault || r.value
-    ), c = pt(e, ["vuefinder__drag-over"]), v = W(t.path), f = R(() => i.storage === v.value?.storage);
+    }), d = A(l.value.expandTreeByDefault || r.value), c = pt(e, ["vuefinder__drag-over"]), v = W(t.path), f = R(() => i.storage === v.value?.storage);
     ie(
       () => ({
         expandTreeByDefault: l.value.expandTreeByDefault,

@@ -27,9 +27,7 @@ const hasExpandedPathInStorage = computed(() => {
   );
 });
 
-const showSubFolders = ref(
-  configState.value.expandTreeByDefault || hasExpandedPathInStorage.value
-);
+const showSubFolders = ref(configState.value.expandTreeByDefault || hasExpandedPathInStorage.value);
 
 const dragNDrop = useDragNDrop(app, ['vuefinder__drag-over']);
 

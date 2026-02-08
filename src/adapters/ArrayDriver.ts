@@ -168,7 +168,9 @@ export class ArrayDriver extends BaseAdapter {
   }
 
   private getTree(root: string, source: DirEntry[] = this.files): DirEntry[] {
-    return source.filter((e) => this.isInTree(e.path, root)).sort((a, b) => a.path.length - b.path.length);
+    return source
+      .filter((e) => this.isInTree(e.path, root))
+      .sort((a, b) => a.path.length - b.path.length);
   }
 
   private uniqueName(dirFull: string, base: string, taken: Set<string>): string {
@@ -290,7 +292,10 @@ export class ArrayDriver extends BaseAdapter {
 
     const contextDir = this.normalizePath(params.path);
     const { storage: contextStorage } = this.split(contextDir);
-    const targetPath = this.normalizePath(params.item || params.path, contextStorage || this.defaultStorage);
+    const targetPath = this.normalizePath(
+      params.item || params.path,
+      contextStorage || this.defaultStorage
+    );
 
     const entry = this.findByPath(targetPath);
     if (!entry) throw new Error('Item not found');
@@ -352,7 +357,9 @@ export class ArrayDriver extends BaseAdapter {
 
     const destination = this.normalizePath(
       params.destination,
-      params.path ? this.split(this.normalizePath(params.path)).storage || this.defaultStorage : this.defaultStorage
+      params.path
+        ? this.split(this.normalizePath(params.path)).storage || this.defaultStorage
+        : this.defaultStorage
     );
     const { storage: destinationStorage } = this.split(destination);
     const sources = this.topLevelSources(params.sources, destinationStorage || this.defaultStorage);
@@ -365,7 +372,12 @@ export class ArrayDriver extends BaseAdapter {
 
       if (source.type === 'file') {
         const newName = this.uniqueName(destination, source.basename, taken);
-        const clone = this.makeFileEntry(destination, newName, source.file_size || 0, source.mime_type);
+        const clone = this.makeFileEntry(
+          destination,
+          newName,
+          source.file_size || 0,
+          source.mime_type
+        );
         additions.push(clone);
         taken.add(clone.path);
 
@@ -417,7 +429,9 @@ export class ArrayDriver extends BaseAdapter {
 
     const destination = this.normalizePath(
       params.destination,
-      params.path ? this.split(this.normalizePath(params.path)).storage || this.defaultStorage : this.defaultStorage
+      params.path
+        ? this.split(this.normalizePath(params.path)).storage || this.defaultStorage
+        : this.defaultStorage
     );
     const { storage: destinationStorage } = this.split(destination);
     const sources = this.topLevelSources(params.sources, destinationStorage || this.defaultStorage);
@@ -594,7 +608,9 @@ export class ArrayDriver extends BaseAdapter {
     if (entry.type !== 'file') throw new Error('Can only save file content');
 
     this.contentStore.set(path, params.content);
-    this.upsert(this.cloneEntry(entry, { file_size: params.content.length, last_modified: Date.now() }));
+    this.upsert(
+      this.cloneEntry(entry, { file_size: params.content.length, last_modified: Date.now() })
+    );
     return path;
   }
 

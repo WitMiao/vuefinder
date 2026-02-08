@@ -163,7 +163,9 @@ export class IndexedDBDriver extends BaseAdapter {
     const filesStore = tx.objectStore('files');
     const contentObjectStore = tx.objectStore('content');
 
-    const existingFilesPromise = this.requestToPromise(filesStore.getAll() as IDBRequest<DirEntry[]>);
+    const existingFilesPromise = this.requestToPromise(
+      filesStore.getAll() as IDBRequest<DirEntry[]>
+    );
     const existingContentPromise = this.requestToPromise(
       contentObjectStore.getAll() as IDBRequest<ContentRecord[]>
     );

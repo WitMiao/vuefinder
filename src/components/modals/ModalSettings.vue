@@ -41,8 +41,7 @@ const notificationsEnabled = computed({
 
 const notificationPosition = computed({
   get: () => configState.value.notificationPosition,
-  set: (value: ConfigState['notificationPosition']) =>
-    config.init({ notificationPosition: value }),
+  set: (value: ConfigState['notificationPosition']) => config.init({ notificationPosition: value }),
 });
 
 const notificationDuration = computed({

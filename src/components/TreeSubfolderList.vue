@@ -84,7 +84,10 @@ watch(
       const expandFromPathConfig = expandedPaths.some((path: string) =>
         isPathInTree(path, item.path)
       );
-      if ((expandByDefaultAtThisLevel || expandFromPathConfig) && showSubFolders.value[item.path] === undefined) {
+      if (
+        (expandByDefaultAtThisLevel || expandFromPathConfig) &&
+        showSubFolders.value[item.path] === undefined
+      ) {
         showSubFolders.value[item.path] = true;
       }
     });
