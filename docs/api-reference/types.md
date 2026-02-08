@@ -33,6 +33,7 @@ VueFinder exports the following types:
 | `DeleteResult`        | Result of delete operation                     |
 | `FileOperationResult` | Result of file operations                      |
 | `FileContentResult`   | Result of file content operations              |
+| `VueFinderComposable` | Programmatic control API for mounted instance  |
 | `SelectEvent`         | Selection event type                           |
 | `UpdatePathEvent`     | Path change event type                         |
 | `ItemDclickEvent`     | Double-click event object type                 |
@@ -109,6 +110,38 @@ export interface DeleteResult extends FileOperationResult {
 
 - Includes the same refreshed directory payload as `FileOperationResult` (`files`, `storages`, `read_only`, `dirname`).
 - `deleted` is optional and may be provided by drivers/backends that return deleted item details.
+
+### `VueFinderComposable`
+
+Programmatic API returned by `useVueFinder(id)` for controlling a mounted VueFinder instance.
+
+```ts
+export interface VueFinderComposable {
+  refresh(): Promise<void>;
+  open(path: string): Promise<void>;
+  getPath(): string;
+  select(paths: string[]): void;
+  selectOne(path: string): void;
+  clearSelection(): void;
+  getSelectedPaths(): string[];
+  createFolder(name: string, path?: string): Promise<void>;
+  createFile(name: string, path?: string): Promise<void>;
+  delete(paths: string[], path?: string): Promise<void>;
+  rename(itemPath: string, newName: string, path?: string): Promise<void>;
+  copy(sources: string[], destination: string, path?: string): Promise<void>;
+  move(sources: string[], destination: string, path?: string): Promise<void>;
+  getFiles(): DirEntry[];
+  getStorages(): string[];
+  isLoading(): boolean;
+  isReadOnly(): boolean;
+}
+```
+
+**Behavior notes:**
+
+- `useVueFinder(id)` throws if the target instance is not mounted.
+- `select(paths)` only selects items that exist in the current loaded directory.
+- Mutating methods delegate to the driver and sync the in-memory file list from returned `files`.
 
 ### `ItemDclickEvent`
 

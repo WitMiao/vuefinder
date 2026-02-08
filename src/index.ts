@@ -10,6 +10,7 @@ import {
   BaseAdapter,
   parseBackendError,
 } from './adapters';
+import { useVueFinder } from './composables/useVueFinder';
 
 type VueFinderOptions = {
   i18n?: Record<string, unknown>;
@@ -34,6 +35,7 @@ export const VueFinderPlugin = {
 export default VueFinderPlugin;
 
 export { VueFinder, VueFinderProvider, contextMenuItems, ContextMenuIds };
+export { useVueFinder };
 
 export { RemoteDriver, ArrayDriver, IndexedDBDriver, BaseAdapter, parseBackendError };
 
@@ -47,6 +49,7 @@ export type {
   UpdatePathEvent,
   NotifyEvent,
   NotifyPayload,
+  VueFinderComposable,
 } from './types';
 
 // Export context menu item type

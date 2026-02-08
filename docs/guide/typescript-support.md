@@ -153,6 +153,21 @@ class MyDriver extends BaseAdapter implements Driver {
 }
 ```
 
+### Composable API
+
+You can also control a mounted instance programmatically:
+
+```ts
+import { useVueFinder } from 'vuefinder';
+
+const finder = useVueFinder('my-local-finder');
+await finder.refresh();
+finder.select(['local://docs/file.txt']);
+await finder.createFolder('New Folder API');
+```
+
+See [Guide - Composable API](./composable-api.md) for full details.
+
 ## Available Types
 
 VueFinder exports the following types:

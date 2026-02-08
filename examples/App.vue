@@ -19,6 +19,7 @@ import FeaturesExample from './examples/FeaturesExample.vue';
 import UIVisibilityExample from './examples/UIVisibilityExample.vue';
 import ItemSizeExample from './examples/ItemSizeExample.vue';
 import MultilangExample from './examples/MultilangExample.vue';
+import ComposableApiExample from './examples/ComposableApiExample.vue';
 
 const example = ref('default');
 
@@ -119,6 +120,7 @@ const driver = ref(remoteDriver as any);
 const examples = {
   default: 'Inline select button example',
   notifications: 'Notifications Demo (@notify + toast settings)',
+  composableApi: 'Composable API Demo (useVueFinder)',
   arrayDriver: 'In-memory ArrayDriver (no REST)',
   performanceDemo: 'Performance Demo - 50k Items (ArrayDriver)',
   indexedDB: 'IndexedDB Driver (persistent)',
@@ -418,6 +420,13 @@ onUnmounted(() => {
         v-if="example === 'multilang'"
         :driver="driver"
         :config="{ ...config, theme: currentTheme }"
+        :features="features"
+      />
+
+      <ComposableApiExample
+        v-if="example === 'composableApi'"
+        :driver="arrayDriver"
+        :config="{ ...config, theme: currentTheme, initialPath: 'memory://', persist: false }"
         :features="features"
       />
 
