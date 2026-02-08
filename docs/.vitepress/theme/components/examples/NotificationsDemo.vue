@@ -11,17 +11,19 @@
       </div>
 
       <div class="notifications-demo__bottom">
-        <div class="notifications-demo__controls">
-          <h3 class="notifications-demo__title">Notification Settings</h3>
+        <div class="notifications-demo__section">
+          <div class="notifications-demo__section-header">
+            <h3 class="notifications-demo__section-title">Notification Settings</h3>
+          </div>
 
-          <label class="notifications-demo__control">
+          <label class="notifications-demo__field notifications-demo__field--inline">
             <input v-model="notificationsEnabled" type="checkbox" />
             <span>Enable toasts</span>
           </label>
 
-          <label class="notifications-demo__control">
+          <label class="notifications-demo__field">
             <span>Position</span>
-            <select v-model="notificationPosition">
+            <select v-model="notificationPosition" class="notifications-demo__input">
               <option value="top-left">top-left</option>
               <option value="top-center">top-center</option>
               <option value="top-right">top-right</option>
@@ -31,17 +33,29 @@
             </select>
           </label>
 
-          <label class="notifications-demo__control">
+          <label class="notifications-demo__field">
             <span>Duration (ms)</span>
-            <input v-model.number="notificationDuration" type="number" min="500" step="250" />
+            <input
+              v-model.number="notificationDuration"
+              class="notifications-demo__input"
+              type="number"
+              min="500"
+              step="250"
+            />
           </label>
 
-          <label class="notifications-demo__control">
+          <label class="notifications-demo__field">
             <span>Max toasts</span>
-            <input v-model.number="notificationVisibleToasts" type="number" min="1" max="10" />
+            <input
+              v-model.number="notificationVisibleToasts"
+              class="notifications-demo__input"
+              type="number"
+              min="1"
+              max="10"
+            />
           </label>
 
-          <label class="notifications-demo__control">
+          <label class="notifications-demo__field notifications-demo__field--inline">
             <input v-model="notificationRichColors" type="checkbox" />
             <span>Rich colors</span>
           </label>
@@ -56,8 +70,8 @@
           </button>
         </div>
 
-        <div class="notifications-demo__log">
-          <h3 class="notifications-demo__title">@notify event log</h3>
+        <div class="notifications-demo__info-section">
+          <h3 class="notifications-demo__info-title">@notify event log</h3>
           <p class="notifications-demo__hint">
             Trigger file actions (rename/delete/create) from VueFinder UI to produce notifications.
           </p>
@@ -151,15 +165,7 @@ onMounted(async () => {
 .notifications-demo {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-}
-
-.notifications-demo__controls,
-.notifications-demo__log {
-  padding: 0.75rem;
-  background: var(--vp-c-bg-soft);
-  border: 1px solid var(--vp-c-border);
-  border-radius: 8px;
+  gap: 1rem;
 }
 
 .notifications-demo__viewer {
@@ -172,17 +178,51 @@ onMounted(async () => {
   gap: 0.75rem;
 }
 
-.notifications-demo__title {
-  margin: 0 0 0.5rem 0;
-  font-size: 0.875rem;
+.notifications-demo__section {
+  padding: 0.75rem;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-left: 4px solid #3b82f6;
+  border-radius: 8px;
 }
 
-.notifications-demo__control {
+.notifications-demo__section-header {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--vp-c-border);
+}
+
+.notifications-demo__section-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.notifications-demo__field {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
-  margin-bottom: 0.5rem;
+  margin-top: 0.75rem;
   font-size: 0.8125rem;
+}
+
+.notifications-demo__field:first-of-type {
+  margin-top: 0;
+}
+
+.notifications-demo__field--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.notifications-demo__input {
+  width: 100%;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 5px;
+  background: var(--vp-c-bg);
+  font-size: 0.75rem;
 }
 
 .notifications-demo__clear-btn {
@@ -195,9 +235,26 @@ onMounted(async () => {
   font-size: 0.75rem;
 }
 
+.notifications-demo__clear-btn:hover:not(:disabled) {
+  background: var(--vp-c-bg-soft);
+}
+
 .notifications-demo__clear-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.notifications-demo__info-section {
+  padding: 0.75rem;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+}
+
+.notifications-demo__info-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
 }
 
 .notifications-demo__hint {

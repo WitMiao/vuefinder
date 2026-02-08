@@ -16,7 +16,7 @@ Example showing how to control a mounted VueFinder instance with `useVueFinder(i
 
 ```vue
 <template>
-  <div style="display: flex; flex-direction: column; gap: 12px">
+  <div class="composable-api-example">
     <vue-finder
       id="composable_demo"
       :driver="driver"
@@ -24,10 +24,22 @@ Example showing how to control a mounted VueFinder instance with `useVueFinder(i
       @ready="initFinder"
     />
 
-    <button :disabled="!isReady" @click="refresh">Refresh</button>
-    <button :disabled="!isReady" @click="openRoot">Open Root</button>
-    <button :disabled="!isReady" @click="selectAllCurrent">Select All Loaded</button>
-    <button :disabled="!isReady" @click="printSelectedPaths">Print Selected Paths</button>
+    <div class="composable-api-example__bottom">
+      <section class="composable-api-example__card">
+        <h3 class="composable-api-example__title">Composable API Controls</h3>
+
+        <button :disabled="!isReady" @click="refresh">Refresh</button>
+        <button :disabled="!isReady" @click="openRoot">Open Root</button>
+        <button :disabled="!isReady" @click="selectAllCurrent">Select All Loaded</button>
+        <button :disabled="!isReady" @click="printSelectedPaths">Print Selected Paths</button>
+      </section>
+
+      <section class="composable-api-example__card composable-api-example__card--log">
+        <h3 class="composable-api-example__title">Selected Paths</h3>
+        <div v-if="!selectedPathsOutput.length">No selected paths printed yet.</div>
+        <div v-for="path in selectedPathsOutput" :key="path">{{ path }}</div>
+      </section>
+    </div>
   </div>
 </template>
 
@@ -53,6 +65,7 @@ const files = ref<DirEntry[]>([
 
 const driver = new ArrayDriver({ files, storage: 'memory' });
 const finder = ref<VueFinderComposable | null>(null);
+const selectedPathsOutput = ref<string[]>([]);
 
 const initFinder = () => {
   if (!finder.value) finder.value = useVueFinder('composable_demo');
@@ -75,14 +88,14 @@ const selectAllCurrent = () => {
 };
 
 const printSelectedPaths = () => {
-  console.log(finder.value?.getSelectedPaths() || []);
+  selectedPathsOutput.value = finder.value?.getSelectedPaths() || [];
 };
 </script>
 ```
 
 ## Notes
 
-- Initialize the composable after the component is mounted. Using `@ready` is the safest pattern.
+- Initialize the composable after the instance is mounted. Using `@ready` is the safest pattern.
 - `select(paths)` selects only items currently loaded in the active directory.
 - `getSelectedPaths()` returns the current selected paths snapshot.
 

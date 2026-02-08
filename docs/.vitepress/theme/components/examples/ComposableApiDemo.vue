@@ -11,29 +11,36 @@
       </div>
 
       <div class="composable-demo__bottom">
-        <div class="composable-demo__panel">
-          <h3 class="composable-demo__title">Composable API Controls</h3>
+        <div class="composable-demo__section">
+          <div class="composable-demo__section-header">
+            <h3 class="composable-demo__section-title">Composable API Controls</h3>
+          </div>
           <p v-if="finderError" class="composable-demo__error">{{ finderError }}</p>
 
           <div class="composable-demo__actions">
-            <button type="button" :disabled="!isReady" @click="refresh">Refresh</button>
-            <button type="button" :disabled="!isReady" @click="openRoot">Open Root</button>
-            <button type="button" :disabled="!isReady" @click="selectFirst">Select First File</button>
-            <button type="button" :disabled="!isReady" @click="selectAllCurrent">Select All Loaded</button>
-            <button type="button" :disabled="!isReady" @click="printSelectedPaths">
+            <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="refresh">Refresh</button>
+            <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="openRoot">Open Root</button>
+            <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="selectFirst">Select First File</button>
+            <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="selectAllCurrent">Select All Loaded</button>
+            <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="printSelectedPaths">
               Print Selected Paths
             </button>
-            <button type="button" :disabled="!isReady" @click="clearSelection">Clear Selection</button>
+            <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="clearSelection">Clear Selection</button>
           </div>
 
           <div class="composable-demo__create">
-            <input v-model="folderName" type="text" placeholder="Folder name" />
-            <button type="button" :disabled="!isReady" @click="createFolder">Create Folder</button>
+            <label class="composable-demo__field">
+              <span>Folder Name</span>
+              <input v-model="folderName" type="text" class="composable-demo__input" placeholder="Folder name" />
+            </label>
+            <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="createFolder">
+              Create Folder
+            </button>
           </div>
         </div>
 
-        <div class="composable-demo__panel composable-demo__selected">
-          <h4>Selected Paths</h4>
+        <div class="composable-demo__info-section">
+          <h3 class="composable-demo__info-title">Selected Paths</h3>
           <div v-if="selectedPathsOutput.length === 0" class="composable-demo__empty">
             No selected paths printed yet.
           </div>
@@ -145,7 +152,7 @@ onMounted(async () => {
 .composable-demo {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
 .composable-demo__viewer {
@@ -158,16 +165,24 @@ onMounted(async () => {
   gap: 0.75rem;
 }
 
-.composable-demo__panel {
+.composable-demo__section {
   padding: 0.75rem;
   background: var(--vp-c-bg-soft);
   border: 1px solid var(--vp-c-border);
+  border-left: 4px solid #8b5cf6;
   border-radius: 8px;
 }
 
-.composable-demo__title {
-  margin: 0 0 0.5rem 0;
+.composable-demo__section-header {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--vp-c-border);
+}
+
+.composable-demo__section-title {
+  margin: 0;
   font-size: 0.875rem;
+  font-weight: 600;
 }
 
 .composable-demo__error {
@@ -182,24 +197,71 @@ onMounted(async () => {
   gap: 0.4rem;
 }
 
-.composable-demo__create {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.4rem;
-  margin-top: 0.6rem;
+.composable-demo__btn {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 5px;
+  background: var(--vp-c-bg);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.composable-demo__selected h4 {
-  margin: 0 0 0.4rem 0;
+.composable-demo__btn:hover:not(:disabled) {
+  background: var(--vp-c-bg-soft);
+}
+
+.composable-demo__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.composable-demo__create {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.composable-demo__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.composable-demo__input {
+  width: 100%;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 5px;
+  background: var(--vp-c-bg);
+  font-size: 0.75rem;
+}
+
+.composable-demo__info-section {
+  padding: 0.75rem;
+  background: var(--vp-c-bg-soft);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 8px;
+}
+
+.composable-demo__info-title {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.composable-demo__path {
+  padding: 0.35rem 0;
+  border-top: 1px solid var(--vp-c-border);
   font-size: 0.75rem;
 }
 
 .composable-demo__empty {
   color: var(--vp-c-text-2);
-  font-size: 0.75rem;
-}
-
-.composable-demo__path {
   font-size: 0.75rem;
 }
 
