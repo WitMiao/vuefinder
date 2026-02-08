@@ -60,6 +60,7 @@ export interface NotifyPayload {
 export interface VueFinderComposable {
   refresh: () => Promise<void>;
   open: (path: string) => Promise<void>;
+  preview: (path: string) => void;
   getPath: () => string;
   select: (paths: string[]) => void;
   selectOne: (path: string) => void;

@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue';
 import { useVueFinder } from '../../src';
 import type { Driver } from '../../src/adapters';
-import type { VueFinderComposable } from '../../src/types';
+import type { DirEntry, VueFinderComposable } from '../../src/types';
 
 interface Props {
   driver: Driver;
@@ -16,6 +16,7 @@ const finderError = ref('');
 
 const folderName = ref('New Folder API');
 const selectedPathsOutput = ref<string[]>([]);
+const selectedPathsLive = ref<string[]>([]);
 
 const initFinder = () => {
   if (finder.value) return;
@@ -45,6 +46,17 @@ const selectAllCurrent = () => {
   finder.value?.select(currentFiles.map((item) => item.path));
 };
 
+const openSelected = async () => {
+  const firstSelected = selectedPathsLive.value[0];
+  if (!firstSelected) return;
+  const selectedItem = (finder.value?.getFiles() || []).find((item) => item.path === firstSelected);
+  if (selectedItem?.type === 'dir') {
+    await finder.value?.open(firstSelected);
+    return;
+  }
+  finder.value?.preview(firstSelected);
+};
+
 const printSelectedPaths = () => {
   selectedPathsOutput.value = finder.value?.getSelectedPaths() || [];
 };
@@ -59,6 +71,10 @@ const createFolder = async () => {
   if (!name) return;
   await finder.value?.createFolder(name);
 };
+
+const handleSelect = (items: DirEntry[]) => {
+  selectedPathsLive.value = items.map((item) => item.path);
+};
 </script>
 
 <template>
@@ -69,6 +85,7 @@ const createFolder = async () => {
       :config="props.config"
       :features="props.features"
       @ready="initFinder"
+      @select="handleSelect"
     />
 
     <div class="composable-api-example__bottom">
@@ -87,6 +104,9 @@ const createFolder = async () => {
           </button>
           <button class="btn" style="margin: 0" :disabled="!isReady" @click="selectAllCurrent">
             Select All Loaded
+          </button>
+          <button class="btn" style="margin: 0" :disabled="!isReady || selectedPathsLive.length === 0" @click="openSelected">
+            Open Selected
           </button>
           <button class="btn" style="margin: 0" :disabled="!isReady" @click="printSelectedPaths">
             Print Selected Paths

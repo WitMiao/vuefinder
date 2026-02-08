@@ -7,6 +7,7 @@
           :driver="driver"
           :config="{ initialPath: 'memory://', persist: false }"
           @ready="initFinder"
+          @select="handleSelect"
         />
       </div>
 
@@ -22,6 +23,9 @@
             <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="openRoot">Open Root</button>
             <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="selectFirst">Select First File</button>
             <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="selectAllCurrent">Select All Loaded</button>
+            <button type="button" class="composable-demo__btn" :disabled="!isReady || selectedPathsLive.length === 0" @click="openSelected">
+              Open Selected
+            </button>
             <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="printSelectedPaths">
               Print Selected Paths
             </button>
@@ -65,6 +69,7 @@ const finder = ref<VueFinderComposable | null>(null);
 const finderError = ref('');
 const folderName = ref('New Folder API');
 const selectedPathsOutput = ref<string[]>([]);
+const selectedPathsLive = ref<string[]>([]);
 let useVueFinderFn: ((id: string) => VueFinderComposable) | null = null;
 
 const isReady = computed(() => Boolean(finder.value));
@@ -98,6 +103,27 @@ const selectAllCurrent = () => {
   finder.value?.select(files.map((item) => item.path));
 };
 
+const openSelected = async () => {
+  const firstSelected = selectedPathsLive.value[0];
+  if (!firstSelected) return;
+  const selectedItem = (finder.value?.getFiles() || []).find((item) => item.path === firstSelected);
+  if (selectedItem?.type === 'dir') {
+    await finder.value?.open(firstSelected);
+    return;
+  }
+  const previewMethod = (finder.value as unknown as { preview?: (path: string) => void })?.preview;
+  if (typeof previewMethod === 'function') {
+    previewMethod(firstSelected);
+    return;
+  }
+
+  // Fallback for docs when dist build is older than source API additions.
+  const previewUrl = driver.value?.getPreviewUrl({ path: firstSelected });
+  if (previewUrl) {
+    window.open(previewUrl, '_blank', 'noopener,noreferrer');
+  }
+};
+
 const clearSelection = () => {
   finder.value?.clearSelection();
 };
@@ -110,6 +136,10 @@ const createFolder = async () => {
   const name = folderName.value.trim();
   if (!name) return;
   await finder.value?.createFolder(name);
+};
+
+const handleSelect = (items: DirEntry[]) => {
+  selectedPathsLive.value = items.map((item) => item.path);
 };
 
 onMounted(async () => {

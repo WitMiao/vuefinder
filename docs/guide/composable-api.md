@@ -26,12 +26,17 @@ const refresh = async () => {
 const createFolder = async () => {
   await finder.value?.createFolder('New Folder API');
 };
+
+const previewFile = () => {
+  finder.value?.preview('local://docs/readme.txt');
+};
 </script>
 
 <template>
   <vue-finder id="my-local-finder" :driver="driver" />
   <button @click="refresh">Refresh</button>
   <button @click="createFolder">Create Folder</button>
+  <button @click="previewFile">Preview File</button>
 </template>
 ```
 

@@ -154,6 +154,7 @@ Programmatic API returned by `useVueFinder(id)` for controlling a mounted VueFin
 export interface VueFinderComposable {
   refresh(): Promise<void>;
   open(path: string): Promise<void>;
+  preview(path: string): void;
   getPath(): string;
   select(paths: string[]): void;
   selectOne(path: string): void;

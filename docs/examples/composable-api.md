@@ -22,6 +22,7 @@ Example showing how to control a mounted VueFinder instance with `useVueFinder(i
       :driver="driver"
       :config="{ initialPath: 'memory://', persist: false }"
       @ready="initFinder"
+      @select="(items) => (selectedPathsLive.value = items.map((item) => item.path))"
     />
 
     <div class="composable-api-example__bottom">
@@ -31,6 +32,9 @@ Example showing how to control a mounted VueFinder instance with `useVueFinder(i
         <button :disabled="!isReady" @click="refresh">Refresh</button>
         <button :disabled="!isReady" @click="openRoot">Open Root</button>
         <button :disabled="!isReady" @click="selectAllCurrent">Select All Loaded</button>
+        <button :disabled="!isReady || selectedPathsLive.value.length === 0" @click="openSelected">
+          Open Selected
+        </button>
         <button :disabled="!isReady" @click="printSelectedPaths">Print Selected Paths</button>
       </section>
 
@@ -66,6 +70,7 @@ const files = ref<DirEntry[]>([
 const driver = new ArrayDriver({ files, storage: 'memory' });
 const finder = ref<VueFinderComposable | null>(null);
 const selectedPathsOutput = ref<string[]>([]);
+const selectedPathsLive = ref<string[]>([]);
 
 const initFinder = () => {
   if (!finder.value) finder.value = useVueFinder('composable_demo');
@@ -85,6 +90,14 @@ const openRoot = async () => {
 const selectAllCurrent = () => {
   const currentFiles = finder.value?.getFiles() || [];
   finder.value?.select(currentFiles.map((item) => item.path));
+};
+
+const openSelected = async () => {
+  if (!selectedPathsLive.value.length) return;
+  const path = selectedPathsLive.value[0];
+  const item = (finder.value?.getFiles() || []).find((entry) => entry.path === path);
+  if (item?.type === 'dir') await finder.value?.open(path);
+  else finder.value?.preview(path);
 };
 
 const printSelectedPaths = () => {
