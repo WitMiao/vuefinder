@@ -14,6 +14,7 @@ Complete reference of all VueFinder events.
 | `path-change`     | `string`     | Emitted when path changes             |
 | `upload-complete` | `DirEntry[]` | Emitted when upload completes         |
 | `delete-complete` | `DirEntry[]` | Emitted when deletion completes       |
+| `notify`          | `NotifyPayload` | Emitted when VueFinder creates a notification |
 | `error`           | `any`        | Emitted when an error occurs          |
 | `ready`           | -            | Emitted when component is ready       |
 | `file-dclick`     | `ItemDclickEvent` | Emitted when file is double-clicked   |
@@ -97,6 +98,25 @@ Emitted when an error occurs during any operation.
 <script setup>
 const handleError = (error) => {
   console.error('Error:', error);
+};
+</script>
+```
+
+### `notify`
+
+Emitted whenever VueFinder calls its internal notifier.
+
+**Payload:** `NotifyPayload`
+
+- `type: 'success' | 'error' | 'info' | 'warning'`
+- `message: string`
+
+```vue
+<vue-finder @notify="handleNotify" />
+
+<script setup>
+const handleNotify = ({ type, message }) => {
+  console.log(`[${type}]`, message);
 };
 </script>
 ```

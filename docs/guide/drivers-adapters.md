@@ -124,6 +124,25 @@ const driver = new ArrayDriver({
 });
 ```
 
+### Multi-storage configuration
+
+`ArrayDriver` supports multiple storages via `storages`.
+
+```js
+const driver = new ArrayDriver({
+  files,
+  storage: 'media',
+  storages: ['media', 'backup'],
+});
+```
+
+Configuration options:
+
+- `files`: `DirEntry[]` or `Ref<DirEntry[]>` (required)
+- `storage`: default storage prefix (default: `'memory'`)
+- `storages`: list of supported storage prefixes (default: `[storage]`)
+- `readOnly`: disable write operations when `true` (default: `false`)
+
 ## IndexedDBDriver
 
 Use `IndexedDBDriver` for browser-based persistent storage using IndexedDB. Files persist across page reloads and browser sessions. This is ideal for offline-first applications or when you need client-side file storage without a backend.
@@ -145,8 +164,19 @@ const driver = new IndexedDBDriver({
 
 - `dbName`: Name of the IndexedDB database (default: `'vuefinder'`)
 - `storage`: Storage identifier used in paths (default: `'indexeddb'`)
+- `storages`: List of managed storage identifiers (default: `[storage]`)
 - `readOnly`: Whether the driver should allow write operations (default: `false`)
 - `version`: Database version number for schema migrations (default: `1`)
+
+### Multi-storage configuration
+
+```js
+const driver = new IndexedDBDriver({
+  dbName: 'my-app-files',
+  storage: 'local',
+  storages: ['local', 'archive'],
+});
+```
 
 ### Features
 

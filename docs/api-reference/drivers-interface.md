@@ -166,7 +166,7 @@ Rename a file or folder to a new name.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list after rename
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the path is read-only
   - `dirname: string` - Current directory name
 
@@ -200,7 +200,7 @@ Copy one or more files or folders to a destination path.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list after copy operation
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the destination path is read-only
   - `dirname: string` - Destination directory name
 
@@ -236,7 +236,7 @@ Move (cut) one or more files or folders to a destination path.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list after move operation
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the destination path is read-only
   - `dirname: string` - Destination directory name
 
@@ -272,7 +272,7 @@ Create a zip archive containing the specified files and folders.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list including the new archive
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the path is read-only
   - `dirname: string` - Current directory name
 
@@ -309,7 +309,7 @@ Extract files and folders from a zip archive.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list with extracted files
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the destination path is read-only
   - `dirname: string` - Extraction directory name
 
@@ -342,7 +342,7 @@ Create a new empty file at the specified path.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list including the new file
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the path is read-only
   - `dirname: string` - Current directory name
 
@@ -375,7 +375,7 @@ Create a new empty folder at the specified path.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list including the new folder
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the path is read-only
   - `dirname: string` - Current directory name
 

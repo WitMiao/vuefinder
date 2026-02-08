@@ -10,16 +10,21 @@ Use `useVueFinder(id)` when you want to control a mounted VueFinder instance pro
 
 ```vue
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import { useVueFinder } from 'vuefinder';
 
-const finder = useVueFinder('my-local-finder');
+const finder = ref<ReturnType<typeof useVueFinder> | null>(null);
+
+onMounted(() => {
+  finder.value = useVueFinder('my-local-finder');
+});
 
 const refresh = async () => {
-  await finder.refresh();
+  await finder.value?.refresh();
 };
 
 const createFolder = async () => {
-  await finder.createFolder('New Folder API');
+  await finder.value?.createFolder('New Folder API');
 };
 </script>
 

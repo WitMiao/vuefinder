@@ -98,6 +98,24 @@ const handleError = (error) => {
 
 **Payload:** `any` - Error object
 
+### `@notify`
+
+Emitted whenever VueFinder produces a notification payload.
+
+```vue
+<template>
+  <vue-finder id="notify-events" :driver="driver" @notify="handleNotify" />
+</template>
+
+<script setup>
+const handleNotify = ({ type, message }) => {
+  console.log(`[${type}] ${message}`);
+};
+</script>
+```
+
+**Payload:** `{ type: 'success' | 'error' | 'info' | 'warning'; message: string }`
+
 ### `@ready`
 
 Emitted when VueFinder is initialized and ready:
@@ -209,6 +227,7 @@ This allows you to add custom behavior while still allowing the default navigati
     @path-change="handlePathChange"
     @upload-complete="handleUploadComplete"
     @delete-complete="handleDeleteComplete"
+    @notify="handleNotify"
     @error="handleError"
     @ready="handleReady"
     @file-dclick="handleFileDclick"
@@ -231,6 +250,10 @@ const handleUploadComplete = (files) => {
 
 const handleDeleteComplete = (items) => {
   console.log('Deleted:', items);
+};
+
+const handleNotify = ({ type, message }) => {
+  console.log('Notify:', type, message);
 };
 
 const handleError = (error) => {

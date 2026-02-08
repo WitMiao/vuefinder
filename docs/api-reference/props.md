@@ -25,6 +25,7 @@ Complete reference of all VueFinder component props.
 | `onPathChange`                | `UpdatePathEvent`                                               | -            | No       | Path change handler (alternative to `@path-change`)           |
 | `onUploadComplete`            | `(files: DirEntry[]) => void`                                   | -            | No       | Upload handler (alternative to `@upload-complete`)            |
 | `onDeleteComplete`            | `(deletedItems: DirEntry[]) => void`                            | -            | No       | Delete handler (alternative to `@delete-complete`)            |
+| `onNotify`                    | `(notification: NotifyPayload) => void`                         | -            | No       | Notify handler (alternative to `@notify`)                     |
 | `onReady`                     | `() => void`                                                    | -            | No       | Ready handler (alternative to `@ready`)                       |
 | `onFileDclick`                | `(event: ItemDclickEvent) => void`                               | -            | No       | File double-click handler (alternative to `@file-dclick`)     |
 | `onFolderDclick`              | `(event: ItemDclickEvent) => void`                               | -            | No       | Folder double-click handler (alternative to `@folder-dclick`) |
@@ -125,3 +126,22 @@ Handler props (`onSelect`, `onPathChange`, etc.) are alternatives to event liste
 <!-- Using prop -->
 <vue-finder :on-select="handleSelect" />
 ```
+
+### `onNotify`
+
+Handle programmatic notifications emitted by VueFinder.
+
+```vue
+<vue-finder :on-notify="handleNotify" />
+
+<script setup>
+const handleNotify = ({ type, message }) => {
+  console.log(type, message);
+};
+</script>
+```
+
+Payload type:
+
+- `type`: `'success' | 'error' | 'info' | 'warning'`
+- `message`: `string`

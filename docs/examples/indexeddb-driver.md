@@ -32,6 +32,7 @@ import { IndexedDBDriver } from 'vuefinder';
 const driver = new IndexedDBDriver({
   dbName: 'vuefinder', // Optional: defaults to 'vuefinder'
   storage: 'indexeddb', // Optional: defaults to 'indexeddb'
+  storages: ['indexeddb', 'archive'], // Optional: multi-storage support
   readOnly: false, // Optional: defaults to false
   version: 1, // Optional: defaults to 1
 });
@@ -59,8 +60,8 @@ The driver automatically initializes the IndexedDB database and creates the nece
 
 - `dbName`: Name of the IndexedDB database (default: `'vuefinder'`)
 - `storage`: Storage identifier used in paths (default: `'indexeddb'`)
+- `storages`: List of managed storage identifiers (default: `[storage]`)
 - `readOnly`: Whether the driver should allow write operations (default: `false`)
 - `version`: Database version number for schema migrations (default: `1`)
 
 See [Guide - Drivers & Adapters](../guide/drivers-adapters.md) for complete driver documentation.
-

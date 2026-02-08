@@ -36,6 +36,8 @@ VueFinder exports the following types:
 | `VueFinderComposable` | Programmatic control API for mounted instance  |
 | `SelectEvent`         | Selection event type                           |
 | `UpdatePathEvent`     | Path change event type                         |
+| `NotifyPayload`       | Notification event payload                     |
+| `NotifyEvent`         | Notify callback/event function type            |
 | `ItemDclickEvent`     | Double-click event object type                 |
 | `ContextMenuItem`     | Context menu item type                         |
 
@@ -111,6 +113,39 @@ export interface DeleteResult extends FileOperationResult {
 - Includes the same refreshed directory payload as `FileOperationResult` (`files`, `storages`, `read_only`, `dirname`).
 - `deleted` is optional and may be provided by drivers/backends that return deleted item details.
 
+### `ArrayDriverConfig`
+
+```ts
+export interface ArrayDriverConfig {
+  files: DirEntry[] | { value: DirEntry[] };
+  storage?: string;
+  storages?: string[];
+  readOnly?: boolean;
+}
+```
+
+**Notes:**
+
+- `storage` is the default storage prefix used when a path does not specify one.
+- `storages` enables multi-storage mode for ArrayDriver.
+
+### `IndexedDBDriverConfig`
+
+```ts
+export interface IndexedDBDriverConfig {
+  dbName?: string;
+  storage?: string;
+  storages?: string[];
+  readOnly?: boolean;
+  version?: number;
+}
+```
+
+**Notes:**
+
+- `storages` defines which storage prefixes this driver manages.
+- Existing data in other storage prefixes is preserved.
+
 ### `VueFinderComposable`
 
 Programmatic API returned by `useVueFinder(id)` for controlling a mounted VueFinder instance.
@@ -160,6 +195,21 @@ export interface ItemDclickEvent {
 - `item` - The `DirEntry` object representing the file or folder that was double-clicked
 - `defaultPrevented` - Boolean indicating whether `preventDefault()` has been called
 - `preventDefault()` - Method to prevent the default behavior (preview for files, navigation for folders)
+
+### `NotifyPayload`
+
+```ts
+export interface NotifyPayload {
+  type: 'success' | 'error' | 'info' | 'warning';
+  message: string;
+}
+```
+
+### `NotifyEvent`
+
+```ts
+export type NotifyEvent = (notification: NotifyPayload) => void;
+```
 
 **Usage Example:**
 

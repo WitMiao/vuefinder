@@ -36,9 +36,9 @@ VueFinder allows you to fine-tune the appearance of file and folder items in bot
 
 | Property        | Type     | Default | Description                          |
 | --------------- | -------- | ------- | ------------------------------------ |
-| `listItemHeight` | `number` | `24`    | Height of list items in pixels       |
+| `listItemHeight` | `number` | `32`    | Height of list items in pixels       |
 | `listItemGap`   | `number` | `2`     | Gap between list items in pixels     |
-| `listIconSize`  | `number` | `20`    | Size of icons in list view (pixels) |
+| `listIconSize`  | `number` | `16`    | Size of icons in list view (pixels) |
 
 ## Basic Example
 
@@ -122,9 +122,9 @@ You can update these values dynamically, and VueFinder will reactively update:
         gridItemHeight: 80,
         gridItemGap: 8,
         gridIconSize,
-        listItemHeight: 24,
+        listItemHeight: 32,
         listItemGap: 2,
-        listIconSize: 20,
+        listIconSize: 16,
       }"
     />
   </div>
