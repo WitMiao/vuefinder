@@ -24,6 +24,8 @@ import UIVisibilityDemo from './components/examples/UIVisibilityDemo.vue';
 import ItemSizeConfigurationDemo from './components/examples/ItemSizeConfigurationDemo.vue';
 import NotificationsDemo from './components/examples/NotificationsDemo.vue';
 import ComposableApiDemo from './components/examples/ComposableApiDemo.vue';
+import WindowExampleDemo from './components/examples/WindowExampleDemo.vue';
+import WindowPopupOnlyDemo from './components/examples/WindowPopupOnlyDemo.vue';
 
 export default {
   extends: DefaultTheme,
@@ -100,6 +102,8 @@ export default {
       app.component('ItemSizeConfigurationDemo', ItemSizeConfigurationDemo);
       app.component('NotificationsDemo', NotificationsDemo);
       app.component('ComposableApiDemo', ComposableApiDemo);
+      app.component('WindowExampleDemo', WindowExampleDemo);
+      app.component('WindowPopupOnlyDemo', WindowPopupOnlyDemo);
     }
   },
 } satisfies Theme;
