@@ -155,6 +155,7 @@ export interface VueFinderComposable {
   refresh(): Promise<void>;
   open(path: string): Promise<void>;
   preview(path: string): void;
+  notify(type: 'success' | 'error' | 'info' | 'warning', message: string): void;
   getPath(): string;
   select(paths: string[]): void;
   selectOne(path: string): void;

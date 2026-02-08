@@ -66,6 +66,10 @@ const openRoot = async () => {
   await finder.value?.open(`${firstStorage}://`);
 };
 
+const testNotify = () => {
+  finder.value?.notify('success', 'Composable notify test');
+};
+
 const createFolder = async () => {
   const name = folderName.value.trim();
   if (!name) return;
@@ -107,6 +111,9 @@ const handleSelect = (items: DirEntry[]) => {
           </button>
           <button class="btn" style="margin: 0" :disabled="!isReady || selectedPathsLive.length === 0" @click="openSelected">
             Open Selected
+          </button>
+          <button class="btn" style="margin: 0" :disabled="!isReady" @click="testNotify">
+            Test Notify
           </button>
           <button class="btn" style="margin: 0" :disabled="!isReady" @click="printSelectedPaths">
             Print Selected Paths

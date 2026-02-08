@@ -30,6 +30,10 @@ const createFolder = async () => {
 const previewFile = () => {
   finder.value?.preview('local://docs/readme.txt');
 };
+
+const testNotify = () => {
+  finder.value?.notify('success', 'Composable notify test');
+};
 </script>
 
 <template>
@@ -37,6 +41,7 @@ const previewFile = () => {
   <button @click="refresh">Refresh</button>
   <button @click="createFolder">Create Folder</button>
   <button @click="previewFile">Preview File</button>
+  <button @click="testNotify">Test Notify</button>
 </template>
 ```
 

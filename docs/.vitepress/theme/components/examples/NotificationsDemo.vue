@@ -6,6 +6,7 @@
           id="demo-notifications"
           :driver="driver"
           :config="config"
+          @ready="initFinder"
           @notify="handleNotify"
         />
       </div>
@@ -63,6 +64,14 @@
           <button
             type="button"
             class="notifications-demo__clear-btn"
+            @click="testNotification"
+          >
+            Test Notification
+          </button>
+
+          <button
+            type="button"
+            class="notifications-demo__clear-btn"
             :disabled="notifyEvents.length === 0"
             @click="notifyEvents = []"
           >
@@ -109,6 +118,7 @@ const notificationDuration = ref(3000);
 const notificationVisibleToasts = ref(4);
 const notificationRichColors = ref(true);
 const notifyEvents = ref<Array<NotifyPayload & { at: string }>>([]);
+const finder = ref<{ notify?: (type: NotifyPayload['type'], message: string) => void } | null>(null);
 
 const config = computed(() => ({
   initialPath: 'memory://',
@@ -126,6 +136,29 @@ const handleNotify = (payload: NotifyPayload) => {
     at: new Date().toLocaleTimeString(),
   });
   notifyEvents.value = notifyEvents.value.slice(0, 20);
+};
+
+const initFinder = async () => {
+  if (finder.value) return;
+  try {
+    const mod = await import('vuefinder');
+    finder.value = mod.useVueFinder('demo-notifications') as typeof finder.value;
+  } catch {
+    finder.value = null;
+  }
+};
+
+const testNotification = () => {
+  if (finder.value?.notify) {
+    finder.value.notify('success', 'Test notification from composable API');
+    return;
+  }
+
+  // Fallback for docs when dist build is older than source API additions.
+  handleNotify({
+    type: 'info',
+    message: 'Test notification (event log fallback)',
+  });
 };
 
 onMounted(async () => {

@@ -35,6 +35,9 @@ Example showing how to control a mounted VueFinder instance with `useVueFinder(i
         <button :disabled="!isReady || selectedPathsLive.value.length === 0" @click="openSelected">
           Open Selected
         </button>
+        <button :disabled="!isReady" @click="finder?.notify('success', 'Composable notify test')">
+          Test Notify
+        </button>
         <button :disabled="!isReady" @click="printSelectedPaths">Print Selected Paths</button>
       </section>
 

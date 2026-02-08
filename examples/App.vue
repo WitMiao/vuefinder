@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { useVueFinder } from '../src';
 import { RemoteDriver, ArrayDriver, IndexedDBDriver } from '../src/adapters';
 import MemoryExample from './examples/MemoryExample.vue';
 import IndexedDBExample from './examples/IndexedDBExample.vue';
-import type { DirEntry, NotifyPayload } from '../src/types';
+import type { DirEntry, NotifyPayload, VueFinderComposable } from '../src/types';
 
 // Import example components
 import DefaultExample from './examples/DefaultExample.vue';
@@ -167,6 +168,7 @@ const notificationDuration = ref(3000);
 const notificationVisibleToasts = ref(4);
 const notificationRichColors = ref(true);
 const notifyEvents = ref<Array<NotifyPayload & { at: string }>>([]);
+const notifyFinder = ref<VueFinderComposable | null>(null);
 
 // Use "advanced" preset to enable all features (or undefined for default)
 const features = 'advanced';
@@ -194,6 +196,19 @@ const handleNotify = (payload: NotifyPayload) => {
 
 const clearNotifyEvents = () => {
   notifyEvents.value = [];
+};
+
+const initNotifyFinder = () => {
+  if (notifyFinder.value) return;
+  try {
+    notifyFinder.value = useVueFinder('notify_demo_vuefinder');
+  } catch {
+    // The example finder might not be mounted yet.
+  }
+};
+
+const testNotification = () => {
+  notifyFinder.value?.notify('success', 'Test notification from composable API');
 };
 
 // Listen messages from popup
@@ -282,6 +297,7 @@ onUnmounted(() => {
           :driver="arrayDriver"
           :config="{ ...config, theme: currentTheme, initialPath: 'memory://', persist: false }"
           :features="features"
+          @ready="initNotifyFinder"
           @notify="handleNotify"
         />
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
@@ -322,6 +338,7 @@ onUnmounted(() => {
                 <input v-model="notificationRichColors" type="checkbox" />
                 Rich colors
               </label>
+              <button class="btn" style="margin: 0" @click="testNotification">Test Notification</button>
               <button class="btn" style="margin: 0" @click="clearNotifyEvents">Clear event log</button>
             </div>
           </div>

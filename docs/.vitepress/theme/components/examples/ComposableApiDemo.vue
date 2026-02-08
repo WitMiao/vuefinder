@@ -26,6 +26,9 @@
             <button type="button" class="composable-demo__btn" :disabled="!isReady || selectedPathsLive.length === 0" @click="openSelected">
               Open Selected
             </button>
+            <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="testNotify">
+              Test Notify
+            </button>
             <button type="button" class="composable-demo__btn" :disabled="!isReady" @click="printSelectedPaths">
               Print Selected Paths
             </button>
@@ -122,6 +125,15 @@ const openSelected = async () => {
   if (previewUrl) {
     window.open(previewUrl, '_blank', 'noopener,noreferrer');
   }
+};
+
+const testNotify = () => {
+  const notifyMethod = (finder.value as unknown as { notify?: (type: string, message: string) => void })?.notify;
+  if (typeof notifyMethod === 'function') {
+    notifyMethod('success', 'Composable notify test');
+    return;
+  }
+  selectedPathsOutput.value = ['notify() is not available in the current dist build yet.'];
 };
 
 const clearSelection = () => {
