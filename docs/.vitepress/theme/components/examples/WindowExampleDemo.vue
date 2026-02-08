@@ -38,7 +38,7 @@ import { onMounted, onUnmounted, ref } from 'vue';
 const filesFromPopup = ref<Array<{ path: string; name?: string }>>([]);
 
 const openPopupWindow = () => {
-  const url = new URL(`${import.meta.env.BASE_URL}examples/window-picker`, window.location.origin);
+  const url = new URL(`${import.meta.env.BASE_URL}examples/window-picker.html`, window.location.origin);
   window.open(url.toString(), 'vuefinder-window-demo', 'width=980,height=680,scrollbars=yes,resizable=yes');
 };
 
