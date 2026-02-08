@@ -268,8 +268,8 @@ onMounted(() => {
         v-if="enabled('download')"
         target="_blank"
         class="vf-btn vf-btn-primary"
-        :download="app.adapter.getDownloadUrl({ path: app.modal.data.item.path })"
-        :href="app.adapter.getDownloadUrl({ path: app.modal.data.item.path })"
+        :download="app.adapter.getDownloadUrl(app.modal.data.item)"
+        :href="app.adapter.getDownloadUrl(app.modal.data.item)"
         >{{ t('Download') }}</a
       >
     </template>
