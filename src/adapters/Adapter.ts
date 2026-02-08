@@ -6,6 +6,8 @@ import type {
   DeleteParams,
   ArchiveParams,
   SaveParams,
+  RenameParams,
+  TransferParams,
 } from './types';
 import type { DirEntry, FsData } from '../types';
 
@@ -72,17 +74,17 @@ export abstract class BaseAdapter implements Driver {
   /**
    * Rename a file or folder
    */
-  abstract rename(params: { path: string; name: string }): Promise<FileOperationResult>;
+  abstract rename(params: RenameParams): Promise<FileOperationResult>;
 
   /**
    * Copy files/folders to a destination
    */
-  abstract copy(params: { sources: string[]; destination: string }): Promise<FileOperationResult>;
+  abstract copy(params: TransferParams): Promise<FileOperationResult>;
 
   /**
    * Move files/folders to a destination
    */
-  abstract move(params: { sources: string[]; destination: string }): Promise<FileOperationResult>;
+  abstract move(params: TransferParams): Promise<FileOperationResult>;
 
   /**
    * Create a zip archive from files/folders

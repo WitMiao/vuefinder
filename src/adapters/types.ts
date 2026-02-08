@@ -97,6 +97,7 @@ export interface RenameParams {
  * Parameters for copy/move operations
  */
 export interface TransferParams {
+  path?: string;
   sources: string[];
   destination: string;
 }
