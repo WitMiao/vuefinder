@@ -45,6 +45,8 @@ export type {
   FsData,
   SelectEvent,
   UpdatePathEvent,
+  NotifyEvent,
+  NotifyPayload,
 } from './types';
 
 // Export context menu item type

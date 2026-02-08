@@ -34,6 +34,22 @@ const selectedTheme = computed<Theme>(() => {
   return stored || 'silver';
 });
 
+const notificationsEnabled = computed({
+  get: () => configState.value.notificationsEnabled,
+  set: (value: boolean) => config.set('notificationsEnabled', value),
+});
+
+const notificationPosition = computed({
+  get: () => configState.value.notificationPosition,
+  set: (value: ConfigState['notificationPosition']) =>
+    config.init({ notificationPosition: value }),
+});
+
+const notificationDuration = computed({
+  get: () => configState.value.notificationDuration,
+  set: (value: number) => config.init({ notificationDuration: Number(value) || 3000 }),
+});
+
 const clearLocalStorage = async () => {
   config.reset();
   clearStore();
@@ -129,6 +145,53 @@ const supportedLanguages = Object.fromEntries(
                   {{ language }}
                 </option>
               </select>
+            </div>
+          </div>
+
+          <div class="vuefinder__settings-modal__section">
+            <label for="notifications-enabled" class="vuefinder__settings-modal__label">
+              {{ t('Notifications') }}
+            </label>
+            <div class="vuefinder__settings-modal__input-group">
+              <label>
+                <input id="notifications-enabled" v-model="notificationsEnabled" type="checkbox" />
+                {{ t('Enable notifications') }}
+              </label>
+            </div>
+
+            <div class="vuefinder__settings-modal__input-group" style="margin-top: 8px">
+              <label for="notification-position" class="vuefinder__settings-modal__label">
+                {{ t('Notification Position') }}
+              </label>
+              <select
+                id="notification-position"
+                v-model="notificationPosition"
+                class="vuefinder__settings-modal__select"
+                :disabled="!notificationsEnabled"
+              >
+                <option value="top-left">Top Left</option>
+                <option value="top-center">Top Center</option>
+                <option value="top-right">Top Right</option>
+                <option value="bottom-left">Bottom Left</option>
+                <option value="bottom-center">Bottom Center</option>
+                <option value="bottom-right">Bottom Right</option>
+              </select>
+            </div>
+
+            <div class="vuefinder__settings-modal__input-group" style="margin-top: 8px">
+              <label for="notification-duration" class="vuefinder__settings-modal__label">
+                {{ t('Notification Duration (ms)') }}
+              </label>
+              <input
+                id="notification-duration"
+                v-model.number="notificationDuration"
+                class="vuefinder__settings-modal__select"
+                type="number"
+                min="1000"
+                max="15000"
+                step="500"
+                :disabled="!notificationsEnabled"
+              />
             </div>
           </div>
         </div>

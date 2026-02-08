@@ -21,6 +21,7 @@ export interface PersistenceConfigState {
   persist: boolean;
   path: string;
   pinnedFolders: DirEntry[];
+  notificationsEnabled: boolean;
 }
 
 /**
@@ -40,6 +41,16 @@ export interface NonPersistenceConfigState {
   listItemHeight: number;
   listItemGap: number;
   listIconSize: number;
+  notificationPosition:
+    | 'top-left'
+    | 'top-center'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-center'
+    | 'bottom-right';
+  notificationDuration: number;
+  notificationVisibleToasts: number;
+  notificationRichColors: boolean;
 }
 
 /**
@@ -78,6 +89,7 @@ const DEFAULT_PERSISTENCE_STATE: PersistenceConfigState = {
   persist: false,
   path: '',
   pinnedFolders: [] as DirEntry[],
+  notificationsEnabled: true,
 };
 
 const DEFAULT_NON_PERSISTENCE_STATE: NonPersistenceConfigState = {
@@ -93,6 +105,10 @@ const DEFAULT_NON_PERSISTENCE_STATE: NonPersistenceConfigState = {
   listItemHeight: 32,
   listItemGap: 2,
   listIconSize: 16,
+  notificationPosition: 'bottom-center',
+  notificationDuration: 3000,
+  notificationVisibleToasts: 4,
+  notificationRichColors: true,
 };
 
 // Cached non-persistence keys for performance

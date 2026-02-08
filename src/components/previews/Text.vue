@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue';
 import { useApp } from '../../composables/useApp';
 import { useFeature } from '../../composables/useFeature';
 import { getErrorMessage } from '../../utils/errorHandler';
-import { toast } from 'vue-sonner';
+import { createNotifier } from '../../utils/notify';
 
 const emit = defineEmits(['success']);
 const content = ref('');
@@ -12,6 +12,7 @@ const editInput = ref(null);
 const showEdit = ref(false);
 
 const app = useApp();
+const notify = createNotifier(app);
 const { enabled } = useFeature();
 
 const { t } = app.i18n;
@@ -43,11 +44,11 @@ const save = async () => {
       content: contentTemp.value,
     });
     content.value = contentTemp.value;
-    toast.success(t('Updated.'));
+    notify.success(t('Updated.'));
     emit('success');
     showEdit.value = !showEdit.value;
   } catch (e: unknown) {
-    toast.error(getErrorMessage(e, t('Failed to save file')));
+    notify.error(getErrorMessage(e, t('Failed to save file')));
   }
 };
 </script>

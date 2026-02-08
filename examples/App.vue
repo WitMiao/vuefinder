@@ -3,7 +3,7 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { RemoteDriver, ArrayDriver, IndexedDBDriver } from '../src/adapters';
 import MemoryExample from './examples/MemoryExample.vue';
 import IndexedDBExample from './examples/IndexedDBExample.vue';
-import type { DirEntry } from '../src/types';
+import type { DirEntry, NotifyPayload } from '../src/types';
 
 // Import example components
 import DefaultExample from './examples/DefaultExample.vue';
@@ -118,6 +118,7 @@ const driver = ref(remoteDriver as any);
 
 const examples = {
   default: 'Inline select button example',
+  notifications: 'Notifications Demo (@notify + toast settings)',
   arrayDriver: 'In-memory ArrayDriver (no REST)',
   performanceDemo: 'Performance Demo - 50k Items (ArrayDriver)',
   indexedDB: 'IndexedDB Driver (persistent)',
@@ -156,16 +157,41 @@ const themes = [
 const isPopup = ref(false);
 
 const maxFileSize = ref('500MB');
+const notificationsEnabled = ref(true);
+const notificationPosition = ref<
+  'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
+>('bottom-center');
+const notificationDuration = ref(3000);
+const notificationVisibleToasts = ref(4);
+const notificationRichColors = ref(true);
+const notifyEvents = ref<Array<NotifyPayload & { at: string }>>([]);
 
 // Use "advanced" preset to enable all features (or undefined for default)
 const features = 'advanced';
 
 const config = computed(() => ({
-  maxFileSize: maxFileSize.value
+  maxFileSize: maxFileSize.value,
+  notificationsEnabled: notificationsEnabled.value,
+  notificationPosition: notificationPosition.value,
+  notificationDuration: Number(notificationDuration.value) || 3000,
+  notificationVisibleToasts: Number(notificationVisibleToasts.value) || 4,
+  notificationRichColors: notificationRichColors.value,
 }));
 
 const handlePathChange = (path: string) => {
   console.log('handlePathChange called with path:', path);
+};
+
+const handleNotify = (payload: NotifyPayload) => {
+  notifyEvents.value.unshift({
+    ...payload,
+    at: new Date().toLocaleTimeString(),
+  });
+  notifyEvents.value = notifyEvents.value.slice(0, 20);
+};
+
+const clearNotifyEvents = () => {
+  notifyEvents.value = [];
 };
 
 // Listen messages from popup
@@ -226,6 +252,49 @@ onUnmounted(() => {
           </select>
         </div>
       </div>
+
+      <div
+        v-if="example === 'notifications'"
+        style="
+          margin-bottom: 1rem;
+          padding: 12px;
+          border: 1px solid #d0d0d0;
+          border-radius: 6px;
+          background: #fff;
+        "
+      >
+        <div style="font-weight: 600; margin-bottom: 8px">Notification Settings</div>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center">
+          <label>
+            <input v-model="notificationsEnabled" type="checkbox" />
+            Enable toasts
+          </label>
+          <label>
+            Position
+            <select v-model="notificationPosition">
+              <option value="top-left">top-left</option>
+              <option value="top-center">top-center</option>
+              <option value="top-right">top-right</option>
+              <option value="bottom-left">bottom-left</option>
+              <option value="bottom-center">bottom-center</option>
+              <option value="bottom-right">bottom-right</option>
+            </select>
+          </label>
+          <label>
+            Duration (ms)
+            <input v-model.number="notificationDuration" type="number" min="500" step="250" />
+          </label>
+          <label>
+            Max toasts
+            <input v-model.number="notificationVisibleToasts" type="number" min="1" max="10" />
+          </label>
+          <label>
+            <input v-model="notificationRichColors" type="checkbox" />
+            Rich colors
+          </label>
+          <button class="btn" style="margin: 0" @click="clearNotifyEvents">Clear event log</button>
+        </div>
+      </div>
     </div>
 
     <!-- Popup mode: Show only VueFinder -->
@@ -246,6 +315,28 @@ onUnmounted(() => {
         :features="features"
         :on-path-change="handlePathChange"
       />
+
+      <div v-if="example === 'notifications'" style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px">
+        <vue-finder
+          id="notify_demo_vuefinder"
+          :driver="arrayDriver"
+          :config="{ ...config, theme: currentTheme, initialPath: 'memory://', persist: false }"
+          :features="features"
+          @notify="handleNotify"
+        />
+        <div style="background: #fff; border: 1px solid #d0d0d0; border-radius: 6px; padding: 10px; overflow: auto">
+          <div style="font-weight: 600; margin-bottom: 8px">@notify event log</div>
+          <div v-if="notifyEvents.length === 0" style="color: #666">No notifications yet.</div>
+          <div
+            v-for="(entry, index) in notifyEvents"
+            :key="`${entry.at}-${index}`"
+            style="border-top: 1px solid #eee; padding: 6px 0"
+          >
+            <div style="font-size: 12px; color: #666">{{ entry.at }} · {{ entry.type }}</div>
+            <div style="font-size: 13px">{{ entry.message }}</div>
+          </div>
+        </div>
+      </div>
 
       <ExternalSelectExample
         v-if="example === 'externalSelect'"

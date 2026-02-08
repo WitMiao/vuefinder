@@ -19,8 +19,8 @@ import ModalSearch from './modals/ModalSearch.vue';
 import ModalSettings from './modals/ModalSettings.vue';
 import ModalShortcuts from './modals/ModalShortcuts.vue';
 import { useApp } from '../composables/useApp';
-import { toast } from 'vue-sonner';
 import { getErrorMessage } from '../utils/errorHandler';
+import { createNotifier } from '../utils/notify';
 import { format as filesizeDefault, metricFormat as filesizeMetric } from '../utils/filesize';
 import { inject } from 'vue';
 
@@ -28,6 +28,7 @@ import type { StoreValue } from 'nanostores';
 import type { ConfigState } from '../stores/config';
 
 const app = useApp();
+const notify = createNotifier(app);
 const { enabled } = useFeature();
 
 const { t } = app?.i18n || { t: (key: string) => key };
@@ -467,7 +468,7 @@ const menuItems = computed<any[]>(() => [
             } catch (error: unknown) {
               // If error occurs, path won't be updated (onAfterOpen won't be called)
               const errorMessage = getErrorMessage(error, t('Failed to navigate to folder'));
-              toast.error(errorMessage);
+              notify.error(errorMessage);
               app.fs.setLoading(false);
             }
           }

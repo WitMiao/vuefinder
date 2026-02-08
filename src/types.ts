@@ -22,6 +22,7 @@ export interface VueFinderProps {
   onPathChange?: UpdatePathEvent;
   onUploadComplete?: (files: DirEntry[]) => void;
   onDeleteComplete?: (deletedItems: DirEntry[]) => void;
+  onNotify?: NotifyEvent;
   onReady?: () => void;
   /**
    * Handler for file double-click events
@@ -49,6 +50,12 @@ export interface VueFinderProps {
 
 export type SelectEvent = (items: DirEntry[]) => void;
 export type UpdatePathEvent = (path: string) => void;
+export type NotifyEvent = (notification: NotifyPayload) => void;
+
+export interface NotifyPayload {
+  type: 'success' | 'error' | 'info' | 'warning';
+  message: string;
+}
 
 /**
  * Double-click event object carrying the clicked item
