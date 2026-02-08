@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useApp } from '../composables/useApp';
 import { useStore } from '@nanostores/vue';
 
@@ -11,11 +11,14 @@ import { useDragNDrop } from '../composables/useDragNDrop';
 import type { TreeViewData, DirEntry } from '../types';
 import type { StoreValue } from 'nanostores';
 import type { CurrentPathState } from '../stores/files';
+import type { ConfigState } from '../stores/config';
 
 const app = useApp();
 const fs = app.fs;
 const dragNDrop = useDragNDrop(app, ['vuefinder__drag-over']);
 const showSubFolders = ref<Record<string, boolean>>({});
+const config = app.config;
+const configState: StoreValue<ConfigState> = useStore(config.state);
 const { t } = app.i18n;
 
 // Make path reactive
@@ -63,6 +66,34 @@ const totalFoldersCount = computed(() => {
 const showMoreFoldersNote = computed(() => {
   return totalFoldersCount.value > displayedCount.value;
 });
+
+const rootPath = computed(() => `${props.storage}://`);
+
+const isPathInTree = (targetPath: string, rootPath: string) => {
+  return targetPath === rootPath || targetPath.startsWith(`${rootPath}/`);
+};
+
+watch(
+  treeSubFolders,
+  (folders) => {
+    const expandByDefaultAtThisLevel =
+      configState.value.expandTreeByDefault && props.path === rootPath.value;
+    const expandedPaths = configState.value.expandedTreePaths || [];
+
+    folders.forEach((item) => {
+      const expandFromPathConfig = expandedPaths.some((path: string) =>
+        isPathInTree(path, item.path)
+      );
+      if (
+        (expandByDefaultAtThisLevel || expandFromPathConfig) &&
+        showSubFolders.value[item.path] === undefined
+      ) {
+        showSubFolders.value[item.path] = true;
+      }
+    });
+  },
+  { immediate: true }
+);
 
 const loadMore = () => {
   displayedCount.value += 50;

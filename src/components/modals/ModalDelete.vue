@@ -2,14 +2,15 @@
 import { ref } from 'vue';
 import { useApp } from '../../composables/useApp';
 import ModalLayout from '../../components/modals/ModalLayout.vue';
-import { toast } from 'vue-sonner';
 import { getErrorMessage } from '../../utils/errorHandler';
+import { createNotifier } from '../../utils/notify';
 import ModalHeader from '../../components/modals//ModalHeader.vue';
 import { useStore } from '@nanostores/vue';
 import DeleteSVG from '../../assets/icons/delete.svg';
 import type { StoreValue } from 'nanostores';
 import type { CurrentPathState } from '../../stores/files';
 const app = useApp();
+const notify = createNotifier(app);
 const { t } = app.i18n;
 const fs = app.fs;
 const currentPath: StoreValue<CurrentPathState> = useStore(fs.path);
@@ -27,13 +28,13 @@ const remove = () => {
         })),
       })
       .then((result: any) => {
-        toast.success(t('Files deleted.'));
+        notify.success(t('Files deleted.'));
         app.fs.setFiles(result.files);
         // app.emitter.emit('vf-delete-complete', items.value);
         app.modal.close();
       })
       .catch((e: unknown) => {
-        toast.error(getErrorMessage(e, t('Failed to delete files')));
+        notify.error(getErrorMessage(e, t('Failed to delete files')));
       });
   }
 };

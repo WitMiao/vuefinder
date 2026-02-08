@@ -123,15 +123,15 @@ components:
           example: false
 
     DeleteResult:
-      type: object
-      required:
-        - deleted
-      properties:
-        deleted:
-          type: array
-          items:
-            $ref: '#/components/schemas/DirEntry'
-          description: List of successfully deleted items
+      allOf:
+        - $ref: '#/components/schemas/FileOperationResult'
+        - type: object
+          properties:
+            deleted:
+              type: array
+              items:
+                $ref: '#/components/schemas/DirEntry'
+              description: Optional list of successfully deleted items
 
     FileOperationResult:
       type: object
@@ -484,7 +484,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FileOperationResult'
+                $ref: '#/components/schemas/DeleteResult'
               example:
                 storages: ["local"]
                 dirname: "local://uploads"
@@ -498,6 +498,17 @@ paths:
                     type: "file"
                     file_size: 2048
                     last_modified: 1699123456
+                    mime_type: "text/plain"
+                    visibility: "public"
+                deleted:
+                  - dir: "local://uploads"
+                    basename: "file.txt"
+                    extension: "txt"
+                    path: "local://uploads/file.txt"
+                    storage: "local"
+                    type: "file"
+                    file_size: 1024
+                    last_modified: 1699123000
                     mime_type: "text/plain"
                     visibility: "public"
         '400':

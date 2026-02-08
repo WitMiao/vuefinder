@@ -126,7 +126,11 @@ Delete one or more files or folders from the specified path.
     - `type: string` - Item type: `'file'` or `'dir'`
 
 **Returns:** `Promise<DeleteResult>` - Promise resolving to deletion result:
-  - `deleted: DirEntry[]` - Array of successfully deleted items (as DirEntry objects)
+  - `files: DirEntry[]` - Updated file list for the current directory after delete
+  - `storages: string[]` - Available storage identifiers
+  - `read_only: boolean` - Whether the current path is read-only
+  - `dirname: string` - Current directory name/path
+  - `deleted?: DirEntry[]` - Optional array of deleted items (if provided by the driver/backend)
 
 **Usage Example:**
 
@@ -138,13 +142,14 @@ const result = await driver.delete({
     { path: 'local://documents/old-folder', type: 'dir' }
   ]
 });
-console.log(`Deleted ${result.deleted.length} items`);
+console.log(result.files); // refreshed current folder listing
+console.log(result.deleted ?? []); // optional deleted items list
 ```
 
 **Error Handling:**
 
 - Throws error if items cannot be deleted (permissions, locked files, etc.)
-- May partially succeed - check `result.deleted` to see which items were actually deleted
+- May partially succeed - if available, check `result.deleted` to see which items were deleted
 
 ---
 
@@ -161,7 +166,7 @@ Rename a file or folder to a new name.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list after rename
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the path is read-only
   - `dirname: string` - Current directory name
 
@@ -195,7 +200,7 @@ Copy one or more files or folders to a destination path.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list after copy operation
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the destination path is read-only
   - `dirname: string` - Destination directory name
 
@@ -231,7 +236,7 @@ Move (cut) one or more files or folders to a destination path.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list after move operation
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the destination path is read-only
   - `dirname: string` - Destination directory name
 
@@ -267,7 +272,7 @@ Create a zip archive containing the specified files and folders.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list including the new archive
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the path is read-only
   - `dirname: string` - Current directory name
 
@@ -304,7 +309,7 @@ Extract files and folders from a zip archive.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list with extracted files
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the destination path is read-only
   - `dirname: string` - Extraction directory name
 
@@ -337,7 +342,7 @@ Create a new empty file at the specified path.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list including the new file
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the path is read-only
   - `dirname: string` - Current directory name
 
@@ -370,7 +375,7 @@ Create a new empty folder at the specified path.
 
 **Returns:** `Promise<FileOperationResult>` - Promise resolving to operation result:
   - `files: DirEntry[]` - Updated file list including the new folder
-  - `storages: Storage[]` - Available storages
+  - `storages: string[]` - Available storages
   - `read_only: boolean` - Whether the path is read-only
   - `dirname: string` - Current directory name
 

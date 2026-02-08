@@ -27,6 +27,7 @@ const emit = defineEmits([
   'path-change',
   'upload-complete',
   'delete-complete',
+  'notify',
   'error',
   'ready',
   'file-dclick',
@@ -109,6 +110,10 @@ app.emitter.on('vf-upload-complete', (files: unknown) => {
 // Listen for delete-complete event
 app.emitter.on('vf-delete-complete', (deletedItems: unknown) => {
   emit('delete-complete', deletedItems as DirEntry[]);
+});
+
+app.emitter.on('vf-notify', (payload: unknown) => {
+  emit('notify', payload);
 });
 
 // Listen for custom double-click events
@@ -235,7 +240,13 @@ const handleExternalDrop = async (e: DragEvent) => {
         </Transition>
       </Teleport>
       <ContextMenu :items="contextMenuItems" />
-      <Toaster position="bottom-center" />
+      <Toaster
+        v-if="configState.notificationsEnabled"
+        :position="configState.notificationPosition"
+        :duration="configState.notificationDuration"
+        :visible-toasts="configState.notificationVisibleToasts"
+        :rich-colors="configState.notificationRichColors"
+      />
     </div>
   </div>
 </template>

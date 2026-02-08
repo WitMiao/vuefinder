@@ -24,29 +24,36 @@ All configuration options are passed via the `config` prop:
 
 ## Configuration Properties
 
-| Property           | Type                               | Default      | Description                                                 |
-| ------------------ | ---------------------------------- | ------------ | ----------------------------------------------------------- |
-| `view`             | `'grid' \| 'list'`                 | `'grid'`     | View mode: grid or list                                     |
-| `theme`            | `Theme`                            | `'silver'`    | Theme name (see [Theming](./theming.md))                    |
-| `fullScreen`       | `boolean`                          | `false`      | Start in full-screen mode                                   |
-| `showTreeView`     | `boolean`                          | `false`      | Show sidebar tree view                                      |
-| `showHiddenFiles`  | `boolean`                          | `true`       | Show hidden files                                           |
-| `metricUnits`      | `boolean`                          | `false`      | Use metric file sizes (KB, MB) instead of binary (KiB, MiB) |
-| `showThumbnails`   | `boolean`                          | `true`       | Show image thumbnails                                       |
-| `persist`          | `boolean`                          | `false`      | Persist current path to localStorage                        |
-| `showMenuBar`      | `boolean`                          | `true`       | Show menu bar (non-persistent, resets on page reload)       |
-| `showToolbar`      | `boolean`                          | `true`       | Show toolbar (non-persistent, resets on page reload)        |
-| `initialPath`      | `string \| null`                   | `null`       | Initial path on mount                                       |
-| `loadingIndicator` | `'linear' \| 'circular' \| string` | `'circular'` | Loading indicator style                                     |
-| `maxFileSize`      | `number \| string \| null`         | `null`       | Maximum file upload size (e.g., `'10mb'`, `'50mb'`)         |
-| `pinnedFolders`    | `DirEntry[]`                       | `[]`         | Array of pinned folders                                     |
-| `gridItemWidth`    | `number`                           | `96`         | Width of grid items in pixels                               |
-| `gridItemHeight`   | `number`                           | `80`         | Height of grid items in pixels                              |
-| `gridItemGap`      | `number`                           | `8`          | Gap between grid items in pixels                            |
-| `gridIconSize`     | `number`                           | `48`         | Size of icons in grid view (pixels)                         |
-| `listItemHeight`   | `number`                           | `24`         | Height of list items in pixels                              |
-| `listItemGap`      | `number`                           | `2`          | Gap between list items in pixels                            |
-| `listIconSize`     | `number`                           | `20`         | Size of icons in list view (pixels)                         |
+| Property                    | Type                                                                                                    | Default           | Description                                                                 |
+| --------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------- | --------------------------------------------------------------------------- |
+| `view`                      | `'grid' \| 'list'`                                                                                      | `'grid'`          | View mode: grid or list                                                     |
+| `theme`                     | `Theme`                                                                                                 | `'silver'`        | Theme name (see [Theming](./theming.md))                                   |
+| `fullScreen`                | `boolean`                                                                                               | `false`           | Start in full-screen mode                                                   |
+| `showTreeView`              | `boolean`                                                                                               | `false`           | Show sidebar tree view                                                      |
+| `expandTreeByDefault`       | `boolean`                                                                                               | `false`           | Expand storage root and first-level tree folders by default                 |
+| `expandedTreePaths`         | `string[]`                                                                                              | `[]`              | Paths that should be expanded in tree view (for targeted default expansion) |
+| `showHiddenFiles`           | `boolean`                                                                                               | `true`            | Show hidden files                                                           |
+| `metricUnits`               | `boolean`                                                                                               | `false`           | Use metric file sizes (KB, MB) instead of binary (KiB, MiB)                |
+| `showThumbnails`            | `boolean`                                                                                               | `true`            | Show image thumbnails                                                       |
+| `persist`                   | `boolean`                                                                                               | `false`           | Persist current path/config to localStorage                                 |
+| `showMenuBar`               | `boolean`                                                                                               | `true`            | Show menu bar (non-persistent, resets on page reload)                      |
+| `showToolbar`               | `boolean`                                                                                               | `true`            | Show toolbar (non-persistent, resets on page reload)                       |
+| `initialPath`               | `string \| null`                                                                                        | `null`            | Initial path on mount                                                       |
+| `loadingIndicator`          | `'linear' \| 'circular' \| string`                                                                      | `'circular'`      | Loading indicator style                                                     |
+| `maxFileSize`               | `number \| string \| null`                                                                              | `null`            | Maximum file upload size (e.g., `'10mb'`, `'50mb'`)                        |
+| `pinnedFolders`             | `DirEntry[]`                                                                                            | `[]`              | Array of pinned folders                                                     |
+| `notificationsEnabled`      | `boolean`                                                                                               | `true`            | Enable/disable toast notifications                                          |
+| `notificationPosition`      | `'top-left' \| 'top-center' \| 'top-right' \| 'bottom-left' \| 'bottom-center' \| 'bottom-right'`     | `'bottom-center'` | Toast position                                                              |
+| `notificationDuration`      | `number`                                                                                                | `3000`            | Toast duration in milliseconds                                              |
+| `notificationVisibleToasts` | `number`                                                                                                | `4`               | Max visible toasts at once                                                  |
+| `notificationRichColors`    | `boolean`                                                                                               | `true`            | Enable rich toast colors                                                    |
+| `gridItemWidth`             | `number`                                                                                                | `96`              | Width of grid items in pixels                                               |
+| `gridItemHeight`            | `number`                                                                                                | `80`              | Height of grid items in pixels                                              |
+| `gridItemGap`               | `number`                                                                                                | `8`               | Gap between grid items in pixels                                            |
+| `gridIconSize`              | `number`                                                                                                | `48`              | Size of icons in grid view (pixels)                                        |
+| `listItemHeight`            | `number`                                                                                                | `32`              | Height of list items in pixels                                              |
+| `listItemGap`               | `number`                                                                                                | `2`               | Gap between list items in pixels                                            |
+| `listIconSize`              | `number`                                                                                                | `16`              | Size of icons in list view (pixels)                                        |
 
 ## Examples
 
@@ -113,3 +120,42 @@ When `persist: true`, VueFinder will save the current path to localStorage, allo
 You can control the visibility of the menu bar and toolbar using the `showMenuBar` and `showToolbar` config options. These are non-persistent options that reset to their default values (`true`) on page reload.
 
 For detailed examples and usage, see the [UI Visibility example](/examples/ui-visibility).
+
+### Notifications + `@notify`
+
+You can keep event notifications while disabling built-in toast UI:
+
+```vue
+<vue-finder
+  id="notify"
+  :driver="driver"
+  :config="{
+    notificationsEnabled: false,
+    notificationDuration: 5000,
+    notificationPosition: 'top-right',
+  }"
+  @notify="({ type, message }) => handleNotify(type, message)"
+/>
+```
+
+- `notificationsEnabled: false` hides toast popups.
+- `@notify` still emits `{ type, message }` for external handling.
+
+### Tree Expansion
+
+Use these options together for default tree expansion behavior:
+
+```vue
+<vue-finder
+  id="tree"
+  :driver="driver"
+  :config="{
+    showTreeView: true,
+    expandTreeByDefault: false,
+    expandedTreePaths: ['local://documents', 'local://documents/work'],
+  }"
+/>
+```
+
+- `expandTreeByDefault: true` expands storage roots and first level.
+- `expandedTreePaths` expands specific branches (and required parent nodes) by path.

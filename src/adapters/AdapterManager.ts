@@ -7,6 +7,8 @@ import type {
   DeleteParams,
   ArchiveParams,
   SaveParams,
+  RenameParams,
+  TransferParams,
 } from './types';
 import type { FsData } from '../types';
 
@@ -170,7 +172,7 @@ export class AdapterManager {
   /**
    * Rename a file or folder
    */
-  async rename(params: { path: string; item: string; name: string }): Promise<FileOperationResult> {
+  async rename(params: RenameParams): Promise<FileOperationResult> {
     const result = await this.driver.rename(params);
 
     // Invalidate list queries
@@ -182,7 +184,7 @@ export class AdapterManager {
   /**
    * Copy files to a destination
    */
-  async copy(params: { sources: string[]; destination: string }): Promise<FileOperationResult> {
+  async copy(params: TransferParams): Promise<FileOperationResult> {
     const result = await this.driver.copy(params);
 
     // Invalidate list queries
@@ -194,7 +196,7 @@ export class AdapterManager {
   /**
    * Move files to a destination
    */
-  async move(params: { sources: string[]; destination: string }): Promise<FileOperationResult> {
+  async move(params: TransferParams): Promise<FileOperationResult> {
     const result = await this.driver.move(params);
 
     // Invalidate list queries

@@ -22,6 +22,7 @@ export interface VueFinderProps {
   onPathChange?: UpdatePathEvent;
   onUploadComplete?: (files: DirEntry[]) => void;
   onDeleteComplete?: (deletedItems: DirEntry[]) => void;
+  onNotify?: NotifyEvent;
   onReady?: () => void;
   /**
    * Handler for file double-click events
@@ -49,6 +50,34 @@ export interface VueFinderProps {
 
 export type SelectEvent = (items: DirEntry[]) => void;
 export type UpdatePathEvent = (path: string) => void;
+export type NotifyEvent = (notification: NotifyPayload) => void;
+
+export interface NotifyPayload {
+  type: 'success' | 'error' | 'info' | 'warning';
+  message: string;
+}
+
+export interface VueFinderComposable {
+  refresh: () => Promise<void>;
+  open: (path: string) => Promise<void>;
+  preview: (path: string) => void;
+  notify: (type: 'success' | 'error' | 'info' | 'warning', message: string) => void;
+  getPath: () => string;
+  select: (paths: string[]) => void;
+  selectOne: (path: string) => void;
+  clearSelection: () => void;
+  getSelectedPaths: () => string[];
+  createFolder: (name: string, path?: string) => Promise<void>;
+  createFile: (name: string, path?: string) => Promise<void>;
+  delete: (paths: string[], path?: string) => Promise<void>;
+  rename: (itemPath: string, newName: string, path?: string) => Promise<void>;
+  copy: (sources: string[], destination: string, path?: string) => Promise<void>;
+  move: (sources: string[], destination: string, path?: string) => Promise<void>;
+  getFiles: () => DirEntry[];
+  getStorages: () => string[];
+  isLoading: () => boolean;
+  isReadOnly: () => boolean;
+}
 
 /**
  * Double-click event object carrying the clicked item

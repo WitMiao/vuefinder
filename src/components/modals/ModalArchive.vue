@@ -2,8 +2,8 @@
 import { ref } from 'vue';
 import { useApp } from '../../composables/useApp';
 import ModalLayout from '../../components/modals/ModalLayout.vue';
-import { toast } from 'vue-sonner';
 import { getErrorMessage } from '../../utils/errorHandler';
+import { createNotifier } from '../../utils/notify';
 import ModalHeader from '../../components/modals/ModalHeader.vue';
 import { useStore } from '@nanostores/vue';
 import ArchiveSVG from '../../assets/icons/archive.svg';
@@ -11,6 +11,7 @@ import type { StoreValue } from 'nanostores';
 import type { CurrentPathState } from '../../stores/files';
 
 const app = useApp();
+const notify = createNotifier(app);
 const { t } = app.i18n;
 const fs = app.fs;
 
@@ -32,12 +33,12 @@ const archive = () => {
         name: name.value,
       })
       .then((result: any) => {
-        toast.success(t('The file(s) archived.'));
+        notify.success(t('The file(s) archived.'));
         app.fs.setFiles(result.files);
         app.modal.close();
       })
       .catch((e: unknown) => {
-        toast.error(getErrorMessage(e, t('Failed to archive files')));
+        notify.error(getErrorMessage(e, t('Failed to archive files')));
       });
   }
 };

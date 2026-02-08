@@ -13,7 +13,7 @@ import ModalSettings from '../components/modals/ModalSettings.vue';
 import type { CurrentPathState } from '@/stores/files';
 import { useApp } from './useApp';
 import { useFeature } from './useFeature';
-import { toast } from 'vue-sonner';
+import { createNotifier } from '../utils/notify';
 
 const KEYBOARD_SHORTCUTS = {
   ESCAPE: 'Escape',
@@ -33,6 +33,7 @@ const KEYBOARD_SHORTCUTS = {
 
 export function useHotkeyActions() {
   const app: App = useApp();
+  const notify = createNotifier(app);
   const fs = app.fs;
   const config = app.config;
   const { enabled } = useFeature();
@@ -97,11 +98,11 @@ export function useHotkeyActions() {
 
     if (e.metaKey && e.code === KEYBOARD_SHORTCUTS.KEY_C && enabled('copy')) {
       if (selectedItems.value.length === 0) {
-        toast.error(app.i18n.t('No items selected'));
+        notify.error(app.i18n.t('No items selected'));
         return;
       }
       fs.setClipboard('copy', new Set(selectedItems.value.map((item: any) => item.path)));
-      toast.success(
+      notify.success(
         selectedItems.value.length === 1
           ? app.i18n.t('Item copied to clipboard')
           : app.i18n.t('%s items copied to clipboard', selectedItems.value.length)
@@ -111,11 +112,11 @@ export function useHotkeyActions() {
 
     if (e.metaKey && e.code === KEYBOARD_SHORTCUTS.KEY_X && enabled('copy')) {
       if (selectedItems.value.length === 0) {
-        toast.error(app.i18n.t('No items selected'));
+        notify.error(app.i18n.t('No items selected'));
         return;
       }
       fs.setClipboard('cut', new Set(selectedItems.value.map((item: any) => item.path)));
-      toast.success(
+      notify.success(
         selectedItems.value.length === 1
           ? app.i18n.t('Item cut to clipboard')
           : app.i18n.t('%s items cut to clipboard', selectedItems.value.length)
@@ -125,11 +126,11 @@ export function useHotkeyActions() {
 
     if (e.metaKey && e.code === KEYBOARD_SHORTCUTS.KEY_V && enabled('copy')) {
       if (fs.getClipboard().items.size === 0) {
-        toast.error(app.i18n.t('No items in clipboard'));
+        notify.error(app.i18n.t('No items in clipboard'));
         return;
       }
       if (fs.getClipboard().path === fs.path.get().path) {
-        toast.error(app.i18n.t('Cannot paste items to the same directory'));
+        notify.error(app.i18n.t('Cannot paste items to the same directory'));
         return;
       }
       if (fs.getClipboard().type === 'cut') {

@@ -57,7 +57,8 @@ export default (props: VueFinderProps, options: Record<string, unknown>): any =>
       storage,
       initialLang as string,
       emitter,
-      supportedLocales as Record<string, unknown>
+      supportedLocales as Record<string, unknown>,
+      configStore
     ),
     // modal state
     modal: useModal(configStore),

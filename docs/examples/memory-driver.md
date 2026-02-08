@@ -61,6 +61,7 @@ const files = ref([
 const driver = new ArrayDriver({
   files: files,
   storage: 'memory',
+  storages: ['memory', 'archive'], // Optional: multi-storage support
 });
 </script>
 ```

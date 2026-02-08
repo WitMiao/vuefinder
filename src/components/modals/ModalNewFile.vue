@@ -8,10 +8,11 @@ import type { StoreValue } from 'nanostores';
 import type { CurrentPathState } from '../../stores/files';
 
 import { useApp } from '../../composables/useApp';
-import { toast } from 'vue-sonner';
 import { getErrorMessage } from '../../utils/errorHandler';
+import { createNotifier } from '../../utils/notify';
 
 const app = useApp();
+const notify = createNotifier(app);
 const { t } = app.i18n;
 const fs = app.fs;
 
@@ -27,12 +28,12 @@ const createFile = () => {
         name: name.value,
       })
       .then((result: any) => {
-        toast.success(t('%s is created.', name.value));
+        notify.success(t('%s is created.', name.value));
         app.fs.setFiles(result.files);
         app.modal.close();
       })
       .catch((e: unknown) => {
-        toast.error(getErrorMessage(e, t('Failed to create file')));
+        notify.error(getErrorMessage(e, t('Failed to create file')));
       });
   }
 };

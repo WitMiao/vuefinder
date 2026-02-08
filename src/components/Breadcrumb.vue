@@ -20,8 +20,9 @@ import type { StoreValue } from 'nanostores';
 import type { CurrentPathState } from '../stores/files';
 import { useApp } from '../composables/useApp';
 import type { DirEntry } from '../types';
-import { toast } from 'vue-sonner';
+import { createNotifier } from '../utils/notify';
 const app = useApp();
+const notify = createNotifier(app);
 
 const { t } = app.i18n;
 const fs = app.fs;
@@ -191,7 +192,7 @@ const togglePathCopyMode = () => {
 
 const copyPathToClipboard = async () => {
   await copyPath(currentPath.value?.path || '');
-  toast.success(t('Path copied to clipboard'));
+  notify.success(t('Path copied to clipboard'));
 };
 
 const exitPathCopyMode = () => {

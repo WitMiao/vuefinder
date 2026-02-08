@@ -4,7 +4,7 @@ import { useApp } from '../../composables/useApp';
 import { useFeature } from '../../composables/useFeature';
 import useUpload, { QUEUE_ENTRY_STATUS } from '../../composables/useUpload';
 import { getErrorMessage } from '../../utils/errorHandler';
-import { toast } from 'vue-sonner';
+import { createNotifier } from '../../utils/notify';
 import { Cropper } from 'vue-advanced-cropper';
 import 'vue-advanced-cropper/dist/style.css';
 import LazyLoad from 'vanilla-lazyload';
@@ -16,6 +16,7 @@ defineOptions({ name: 'ImagePreview' });
 
 const emit = defineEmits(['success']);
 const app = useApp();
+const notify = createNotifier(app);
 const { enabled } = useFeature();
 
 const { t } = app.i18n;
@@ -75,7 +76,7 @@ const crop = async () => {
   });
 
   if (!blob) {
-    toast.error(t('Failed to save image'));
+    notify.error(t('Failed to save image'));
     return;
   }
 
@@ -115,7 +116,7 @@ const crop = async () => {
       attempts++;
     }
 
-    toast.success(t('Updated.'));
+    notify.success(t('Updated.'));
 
     // Reload image
     await fetch(previewUrl.value, { cache: 'reload', mode: 'no-cors' });
@@ -128,7 +129,7 @@ const crop = async () => {
     await toggleEditMode();
     emit('success');
   } catch (e: unknown) {
-    toast.error(getErrorMessage(e, t('Failed to save image')));
+    notify.error(getErrorMessage(e, t('Failed to save image')));
   }
 };
 

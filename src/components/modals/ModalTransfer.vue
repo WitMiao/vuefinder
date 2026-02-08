@@ -15,9 +15,10 @@ import type { CurrentPathState } from '../../stores/files';
 import FolderSVG from '../../assets/icons/folder.svg';
 import FileSVG from '../../assets/icons/file.svg';
 import { getErrorMessage } from '../../utils/errorHandler';
-import { toast } from 'vue-sonner';
+import { createNotifier } from '../../utils/notify';
 
 const app = useApp();
+const notify = createNotifier(app);
 const { enabled } = useFeature();
 const { t } = app.i18n;
 
@@ -143,7 +144,7 @@ const transfer = async () => {
       app.fs.setFiles(files);
       app.modal.close();
     } catch (error) {
-      toast.error(getErrorMessage(error, t('Failed to transfer files')));
+      notify.error(getErrorMessage(error, t('Failed to transfer files')));
     }
   }
 };

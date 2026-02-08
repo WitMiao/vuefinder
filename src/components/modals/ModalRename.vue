@@ -2,8 +2,8 @@
 import { ref } from 'vue';
 import { useApp } from '../../composables/useApp';
 import { useStore } from '@nanostores/vue';
-import { toast } from 'vue-sonner';
 import { getErrorMessage } from '../../utils/errorHandler';
+import { createNotifier } from '../../utils/notify';
 import ModalLayout from '../../components/modals/ModalLayout.vue';
 import ModalHeader from '../../components/modals/ModalHeader.vue';
 import RenameSVG from '../../assets/icons/rename.svg';
@@ -11,6 +11,7 @@ import type { StoreValue } from 'nanostores';
 import type { CurrentPathState } from '../../stores/files';
 
 const app = useApp();
+const notify = createNotifier(app);
 const { t } = app.i18n;
 const fs = app.fs;
 const currentPath: StoreValue<CurrentPathState> = useStore(fs.path);
@@ -27,12 +28,12 @@ const rename = () => {
         name: name.value,
       })
       .then((result: any) => {
-        toast.success(t('%s is renamed.', name.value));
+        notify.success(t('%s is renamed.', name.value));
         app.fs.setFiles(result.files);
         app.modal.close();
       })
       .catch((e: unknown) => {
-        toast.error(getErrorMessage(e, t('Failed to rename')));
+        notify.error(getErrorMessage(e, t('Failed to rename')));
       });
   }
 };

@@ -11,6 +11,7 @@ export const VueFinderPlugin: {
 
 // Default export
 export default VueFinderPlugin;
+export function useVueFinder(id: string): import('./types').VueFinderComposable;
 
 // Driver classes
 export class RemoteDriver {
@@ -154,6 +155,9 @@ export type {
   FsData,
   SelectEvent,
   UpdatePathEvent,
+  NotifyEvent,
+  NotifyPayload,
+  VueFinderComposable,
 } from './types';
 
 // Export context menu item type

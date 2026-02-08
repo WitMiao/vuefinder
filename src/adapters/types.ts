@@ -10,6 +10,7 @@ export type { FsData };
 export interface IndexedDBDriverConfig {
   dbName?: string;
   storage?: string;
+  storages?: string[];
   readOnly?: boolean;
   version?: number;
 }
@@ -47,8 +48,8 @@ export interface RemoteDriverConfig {
 /**
  * Response from delete operations
  */
-export interface DeleteResult {
-  deleted: DirEntry[];
+export interface DeleteResult extends FileOperationResult {
+  deleted?: DirEntry[];
 }
 
 /**
@@ -97,6 +98,7 @@ export interface RenameParams {
  * Parameters for copy/move operations
  */
 export interface TransferParams {
+  path?: string;
   sources: string[];
   destination: string;
 }

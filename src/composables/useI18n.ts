@@ -1,8 +1,8 @@
 import { reactive, ref, computed, watch } from 'vue';
 import { useStore } from '@nanostores/vue';
-import { toast } from 'vue-sonner';
 import { getErrorMessage } from '../utils/errorHandler';
 import { createLocaleAtom } from '../stores/i18n';
+import { createNotifier } from '../utils/notify';
 
 // Store locale atoms per instance (keyed by storage instance)
 const localeAtoms = new Map<string, ReturnType<typeof createLocaleAtom>>();
@@ -16,8 +16,10 @@ export function useI18n(
   storage: { getStore: (k: string, d?: any) => any; setStore: (k: string, v: any) => void },
   initialLocale: string,
   emitter: any,
-  supportedLocales: Record<string, any>
+  supportedLocales: Record<string, any>,
+  config?: { get: (key: any) => unknown }
 ) {
+  const notify = createNotifier({ emitter, config });
   // Storage parameter kept for API compatibility but not used (using global cache instead)
   // Use global storage key for locale - shared across all VueFinder instances
   const globalStorageKey = 'vuefinder_locale';
@@ -136,14 +138,14 @@ export function useI18n(
           setGlobalTranslations(String(newLocale), loadedTranslations);
         } catch (e: unknown) {
           const errorMessage = getErrorMessage(e, 'Locale cannot be loaded!');
-          toast.error(errorMessage);
+          notify.error(errorMessage);
           return;
         }
       }
 
       // Show toast for user-initiated changes
       if (Object.values(supportedLocales).length > 1) {
-        toast.success('The language is set to ' + newLocale);
+        notify.success('The language is set to ' + newLocale);
         emitter.emit('vf-language-saved');
       }
     },
