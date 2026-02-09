@@ -49,22 +49,6 @@ const notificationDuration = computed({
   set: (value: number) => config.init({ notificationDuration: Number(value) || 3000 }),
 });
 
-const expandTreeByDefault = computed({
-  get: () => configState.value.expandTreeByDefault,
-  set: (value: boolean) => config.set('expandTreeByDefault', value),
-});
-
-const expandedTreePathsText = computed({
-  get: () => (configState.value.expandedTreePaths || []).join('\n'),
-  set: (value: string) => {
-    const normalized = value
-      .split('\n')
-      .map((path) => path.trim())
-      .filter(Boolean);
-    config.set('expandedTreePaths', normalized);
-  },
-});
-
 const clearLocalStorage = async () => {
   config.reset();
   clearStore();
@@ -210,29 +194,6 @@ const supportedLanguages = Object.fromEntries(
             </div>
           </div>
 
-          <div class="vuefinder__settings-modal__section">
-            <label for="expand-tree-default" class="vuefinder__settings-modal__label">
-              {{ t('Navigation Tree') }}
-            </label>
-            <div class="vuefinder__settings-modal__input-group">
-              <label>
-                <input id="expand-tree-default" v-model="expandTreeByDefault" type="checkbox" />
-                {{ t('Expand tree by default') }}
-              </label>
-            </div>
-            <div class="vuefinder__settings-modal__input-group" style="margin-top: 8px">
-              <label for="expand-tree-paths" class="vuefinder__settings-modal__label">
-                {{ t('Expanded Tree Paths') }}
-              </label>
-              <textarea
-                id="expand-tree-paths"
-                v-model="expandedTreePathsText"
-                class="vuefinder__settings-modal__select"
-                rows="3"
-                placeholder="local://documents&#10;local://documents/work"
-              ></textarea>
-            </div>
-          </div>
         </div>
 
         <!-- Reset Section -->
