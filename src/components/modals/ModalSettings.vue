@@ -129,7 +129,6 @@ const supportedLanguages = Object.fromEntries(
               </select>
             </div>
           </div>
-
         </div>
 
         <!-- Reset Section -->
