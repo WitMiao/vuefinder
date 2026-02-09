@@ -32,6 +32,7 @@ const emit = defineEmits([
   'ready',
   'file-dclick',
   'folder-dclick',
+  'update:locale',
 ]);
 
 const props = defineProps<VueFinderProps>();
@@ -55,6 +56,7 @@ watch(
 );
 
 const fs = app.fs;
+const reactiveLocale = useStore(app.i18n.localeAtom);
 
 // Use nanostores reactive values for template reactivity
 const configState: StoreValue<ConfigState> = useStore(config.state);
@@ -135,6 +137,16 @@ watch(
     }
   },
   { immediate: true }
+);
+
+watch(
+  reactiveLocale,
+  (newLocale, oldLocale) => {
+    if (newLocale !== oldLocale) {
+      emit('update:locale', String(newLocale));
+    }
+  },
+  { immediate: false }
 );
 
 // fetch initial data
